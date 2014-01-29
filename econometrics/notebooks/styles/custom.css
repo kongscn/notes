@@ -1,0 +1,36 @@
+/* This style is mostly copied with minor changes and some 
+ * simplicities from an impresive repo of @CamDavidsonPilon:
+ * 
+ * https://github.com/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers
+ *
+ */
+
+<style>
+    div.cell{
+        width: 850px;
+        margin-left: 14%;
+        margin-right: auto;
+    }
+    div.text_cell_render{
+        line-height: 120%;
+        font-size: 120%;
+        width: 850px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    h2 {
+        border-bottom-color: #ddd;
+        border-width: 1px;
+        border-bottom-style:solid;
+    }
+</style>
+
+<script>
+    MathJax.Hub.Config({
+        TeX: {
+            extensions: ["AMSmath.js"],
+            equationNumbers: { autoNumber: "AMS" }
+        },
+        displayAlign: 'center'
+    });
+</script>

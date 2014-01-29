@@ -1,0 +1,15 @@
+/datasets/
+
+*.py[cod]
+__pycache__/
+.ipynb_checkpoints/
+
+*~
+
+# For R
+
+# History files
+.Rhistory
+
+# Example code in package build process
+*-Ex.R
