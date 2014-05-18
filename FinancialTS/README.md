@@ -9,6 +9,8 @@ The book: Analysis of Financial Time Series 3rd Edition
 [Companion website](http://faculty.chicagobooth.edu/ruey.tsay/teaching/fts3)
 (encoding of this page seems to be UTF-16LE, so, well, what can I say...)
 
+Course page of [2009](http://faculty.chicagobooth.edu/ruey.tsay/teaching/bs41202/sp2009/) and [2014](http://faculty.chicagobooth.edu/ruey.tsay/teaching/bs41202/sp2014/)
+
 ------
 I hope I can make this a note of learning this book, 
 with the fascinating ipython notebook.
