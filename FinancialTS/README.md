@@ -1,6 +1,8 @@
 learn_fts
 =========
 
+#### [View](http://kongscn.github.io/notes/index.html) this note online.
+
 Notes of reading Analysis of Financial Time Series 3rd Edition by Ruey S. Tsay
 
 The book: Analysis of Financial Time Series 3rd Edition

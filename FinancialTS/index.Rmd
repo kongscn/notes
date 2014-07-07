@@ -1,0 +1,19 @@
+---
+title: "Note of Analysis of Financial Time Series by Tsay"
+author: "kongs"
+date: "Monday, July 07, 2014"
+---
+
+```{r, include=FALSE, cache = FALSE}
+source("util/knitropts.R")
+```
+
+
+This is my notes of learning *Analysis of Financial Time Series*,
+by Tsay, 3rd edition.
+
+[Chapter 1](CH1.html) Financial Time Series and Their Characteristics
+
+[Chapter 2](CH2.html) Linear Time Series Analysis and Its Applications
+
+To be continued...

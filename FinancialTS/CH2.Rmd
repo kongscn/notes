@@ -1,0 +1,363 @@
+---
+title: "Chapter 2: Linear Time Series Analysis and Its Applications"
+author: "kongs"
+date: "Sunday, July 06, 2014"
+---
+
+```{r, include=FALSE, cache = FALSE}
+source("util/knitropts.R")
+```
+
+`Warning:`{.text-warning} Hyperlinks of the table of contents may be broken.
+This hopefully will be fixed by Shinyapps.io later.
+
+`Todo:`{.text-primary} Write a self-sufficient example 
+for ARIMA estimation and diagnostic, using suggested packages.
+
+`Todo:`{.text-primary} Compare different software working process, 
+include `Mablab`, `Stata`, `Python`, `SAS`.
+
+`Todo:`{.text-primary} Compare different software working process, 
+include `Mablab`, `Stata`, `Python`, `SAS`.
+
+# Stationary
+
+
+# Correlation and Autocorrelation Function
+
+
+## Autocorrelation Function (ACF)
+
+$$ \rho_\ell
+= \frac{\text{Cov}(r_t, r_{t-\ell})}{\sqrt{\text{Var}(r_t)\text{Var}(r_{t-\ell})}}
+= \frac{\text{Cov}(r_t, r_{t-\ell})}{\text{Var}(r_t)}
+= \frac{\gamma_\ell}{\gamma_0}
+$$
+
+
+## Test Individual ACF
+
+
+
+## Portmanteau Test
+
+Test jointly that several autocorrelations of $r_t$ are zero.
+
+  * $H_0$: $\rho_1 = \rho_2 = ... = \rho_m = 0$
+  
+$$ Q(m) = T(T+2)\sum_{\ell=1}^{m} \frac{\hat{\rho}_{\ell}^2}{T - \ell} $$
+
+```{r}
+# library(fBasics)
+# library(forecast)
+source('util/dataset.R')
+```
+
+
+
+```{r}
+df = read.table(dataset$m_ibm3dx2608$url, header=T)
+sibm = df$ibmrtn
+Box.test(sibm, lag=12, type='Ljung')
+sibm_acf = acf(sibm)
+sibm_acf
+sibm_pacf = pacf(sibm)
+sibm_pacf
+
+# If you want acf start with lag 1, as acf(lag=0) is always 1, you can give xlim starting from 1. Likely you can also set ylim to make it looks better.
+acf(sibm, lag=12, xlim=c(1, 12))
+```
+
+`acf2{astsa}` is a handy function to plot both acf and pacf from $lag=1$,
+sharing the same y axis range.
+
+```{r}
+acf_pacf = astsa::acf2(sibm)
+head(acf_pacf)
+```
+
+Package `{fBasics}` also include another two functions that deal with correlations: `lacfPlot`, and `teffectPlot`.
+
+```{r}
+fBasics::lacfPlot(sibm)
+fBasics::teffectPlot(sibm)
+```
+
+
+# White noise and linear time series
+
+## Linear Time Series
+
+$$ r_t = \mu + \sum_{i=0}^{\infty} \psi_i a_{t-i} $$
+
+We have,
+
+$$ E(r_t) = \mu, \text{Var}(r_t) = \sigma_a^2 \sum_{i=0}^\infty \psi_i^2 $$
+
+The lag-$\ell$ autocovariance of $r_t$ is
+
+$$ \gamma_\ell = \sigma_a^2 \sum_{j=0}^\infty \psi_j \psi_{j+\ell} $$
+
+$$ \rho_\ell = \frac{\gamma_\ell}{\gamma_0} 
+= \frac{\sum_{i=0}^\infty \psi_i \psi_{i+\ell}}{1+\sum_{i=1}^\infty \psi_i^2}
+$$
+
+
+# Simple AR Models
+
+### An AR(1) Model
+
+$$ r_t = \phi_0 + \phi_1 r_{t-1} + a_t$$
+Where $\{a_t\}$ is assumed to be a white noise series 
+with mean zero and variance $\sigma_a^2$.
+
+$$ E(r_t|r_{t-1}) = \phi_0 + \phi_1 r_{t-1}, 
+\text{Var}(r_t|r_{t-1}) = \text{Var}(a_t) = \sigma_a^2$$
+
+### AR(p) Model
+
+$$ r_t = \phi_0 + \phi_1 r_{t-1} + \ldots + \phi_p r_{t-p} + a_t $$
+
+## Properties of AR Models
+
+### AR(1) Model
+
+$$ E(r_t) = \mu = \frac{\phi_0}{1-\phi_1} $$
+
+$$ r_t - \mu = \phi_1(r_{t-1}-\mu) + a_t $$
+
+$$ \text{Var}(r_t) = \frac{\sigma_a^2}{1-\phi_1^2} $$
+
+$$ \rho_\ell = \phi_1 \rho_{\ell - 1} $$
+
+### AR(2) Model
+
+$$ (r_t - \mu) = \phi_1(r_{t-1} - \mu) + \phi_2(r_{t-2} - \mu) + a_t $$
+
+$$ \rho_1 = \frac{\phi_1}{1-\phi_2} $$
+$$ \rho_\ell = \phi_1 \rho_{\ell-1} + \phi_2 \rho_{\ell-2} $$
+
+$$ (1-\phi_1 B - \phi_2 B^2)\phi_\ell = 0 $$
+
+The solutions to the corresponding second-order polynomial equation are:
+
+$$ x= \frac{\phi_1 \pm \sqrt{\phi_1^2 + 4 \phi_2}}{-2\phi_2} $$
+
+$$ k = \frac{2\pi}{\cos^{-1}(\phi_1 / 2\sqrt{-\phi_2})}$$
+
+If we write the solutions as $a \pm b i$, then we have 
+$\phi_1 = 2a, \phi_2 = -(a^2 + b^2)$, and
+
+$$ k = \frac{2\pi}{\cos^{-1}(a / \sqrt{a^2 + b^2})} $$
+
+#### Example
+
+```{r, strip.white=TRUE}
+gnp = scan(file=dataset$dgnp82$url)
+gnp_ts = ts(gnp, frequency=4, start=c(1947,2))
+plot(gnp_ts)
+points(gnp_ts, pch='*')
+
+gnp_ar = ar(gnp, method='mle')
+# Calculate $\phi_0$:
+(1-sum(gnp_ar$ar)) * gnp_ar$x.mean
+# Residual standard error:
+sqrt(gnp_ar$var.pred)
+
+# calculate business cycle k
+p1 = c(1, -gnp_ar$ar)
+roots = polyroot(p1)
+roots
+Mod(roots)
+k = 2 * pi / acos(1.59023/1.913308)
+k
+
+# If using a general arima model with order (ar, 0, 0)
+gnp_arima = arima(gnp, order=c(gnp_ar$order, 0, 0))
+gnp_arima
+coefs = gnp_arima$coef
+# \phi_0:
+(1-sum(coefs[1:gnp_ar$order])) * coefs[['intercept']]
+# Residual standard error:
+sqrt(gnp_arima$sigma2)
+# Same logic applies when calculate cycles
+```
+
+### Stationary
+
+
+## Identifying AR Models in Practice
+
+### Partial Autocorrelation Function (PACF)
+
+```{r}
+df = read.table(dataset$m_ibm3dx2608$url, header=T)
+crsp = df$vwrtn
+crsp_pacf = pacf(crsp)
+crsp_pacf
+
+mdl = arima(crsp, order=c(3,0,0))
+mdl
+(1-sum(mdl$coef)+mdl$coef['intercept'])*mdl$coef['intercept']  # phi0
+
+rtest = Box.test(mdl$residuals, lag=12, type='Ljung')
+rtest
+
+# Adjust degrees of freedom:
+1-pchisq(rtest$statistic, 12-3)
+
+# To fix AR(2) coef to zero:
+arima(crsp, order=c(3,0,0), fixed=c(NA,0,NA,NA))
+```
+
+`Question:`{.text-warning} How to get p-values of coeffcients?
+
+`Answer:`{.text-success} A general form is 
+`pt(abs(model$coef)/sqrt(diag(aa$var.coef)), df.of.resid, lower.tail = F)*2`, 
+but you need to find out how to access to 
+coef and stardard of coefs of your model object.
+
+### Information Criteria
+
+You can use `ar(...)$aic` and `ar(...)$order` to get IC based
+order selection data.
+
+
+## Goodness of Fit
+
+
+## Forecasting
+
+See the following code example.
+
+```{r}
+dt = read.table(dataset$m_ibm3dx2608$url, header=T)
+vwval = dt$vwrtn
+vw = ts(vwval, frequency=12, start=c(1926,1))
+x = ts(vw[1:984], start=start(vw), frequency=12)
+actual = ts(vw[-c(1:984)], end=end(vw), frequency=12)
+fit = forecast::Arima(x, order=c(3,0,0))
+fore1 = forecast::forecast(fit, 12)
+plot(x, xlim=c(2000, 2010))
+points(fore1$mean, pch=1, cex=0.8, type="o")
+points(actual, pch=20, cex=0.8, type="o")
+lines(ts(fore1$upper[,'95%'], end=end(vw), frequency=12), lty=3)
+lines(ts(fore1$lower[,'95%'], end=end(vw), frequency=12), lty=3)
+```
+
+To produce exactly the same figure as Figure 2.7 on page57:
+
+```{r}
+x = ts(vw[1:984], start=start(vw), frequency=12)
+actual = ts(vw[-c(1:984)], end=end(vw), frequency=12)
+fit = forecast::Arima(x, order=c(3,0,0))
+fore1 = forecast::forecast(fit, 12)
+plot(vw, xlim=c(2000, 2010), type="o", pch=20, cex=0.5)
+points(fore1$mean, pch=1, cex=0.8, type="o")
+points(actual, pch=20, cex=0.8, type="o")
+lines(ts(c(x, fore1$mean), frequency=12, start=start(x)))
+x_upper = ts(c(x, fore1$upper[,'95%']), start=start(x), frequency=12)
+x_lower = ts(c(x, fore1$lower[,'95%']), start=start(x), frequency=12)
+lines(x_upper, lty=3)
+lines(x_lower, lty=3)
+```
+
+
+# MA Models
+
+$$ r_t = c_0 + a_t - \theta_1 a_{t-1} - /ldots - \theta_q a_{t-2} $$
+
+## Properties of MA models
+
+### Stationarity
+
+$$ E(r_t) = c_0 $$
+$$ \text{Var}(r_t) = (1+\theta_1^2 + \theta_2^2 + \ldots + \theta_q^2)\sigma_a^2 $$
+
+### Autocorrelation Function
+
+For an MA(q) model, $\rho_\ell = 0, for \ell > q $.
+
+### Invertibility
+
+Rewriting a zero-mean MA(1) mdel as $ a_t = r_t + \theta_1 a_{t-1} $,
+$$ a_t = r_t + \theta_1 r_{t-1} + \theta_1^2 r_{t-2} + \ldots $$
+
+if $ |\theta_1| < 1$, we say the MA(1) model is **invertible**.
+
+## Identifying MA Order
+
+```{r}
+dt = read.table(dataset$m_ibm3dx2608$url, header=T)
+ew = dt$ewrtn
+ew = ts(ew, frequency=12, start=c(1926,1))
+plot(ew, type='l')
+ew_acf = acf(ew)
+ew_acf
+```
+
+## Estimating an MA model
+
+```{r}
+m1 = arima(ew, order=c(0,0,9), fixed=c(NA,0,NA,rep(0,5),NA, NA))
+m1
+```
+
+
+
+
+
+
+
+# Simple ARMA Models
+
+An ARMA(1,1) Model
+$$ r_t - \phi_1 r_{t-1} = \phi_0 + a_t - \theta_1 a_{t-1} $$
+
+## Properties of ARMA(1,1) Models
+
+$$ E(r_t) = \mu = \frac{\phi_1}{1-\phi_1} $$
+
+$$ \text{Var}(r_t) = 
+\frac{(1-2\phi_1 \theta_1 + \theta_1^2)\sigma_a^2}{1-\phi_1^2} $$
+
+# Unitroot, Seasonal Models etc., to be finished
+
+TO BE FINISHED...
+
+```{r}
+timeDate::setRmetricsOptions(myFinCenter = "GMT")
+charvec = timeDate::timeCalendar()
+set.seed(4711)
+data = matrix(exp(cumsum(rnorm(12, sd = 0.1))))
+tS = timeSeries::timeSeries(data, charvec, units = "tS")
+tS
+
+```
+
+```{r unitroot}
+da = read.table(dataset$d_sp55008$url, header=T)
+sp5 = log(da[,7])
+fUnitRoots::adfTest(sp5, lags=15, type=c('ct'))
+```
+
+
+Forecasting an ARIMA Model
+
+```{r}
+data(gtemp, package="astsa")
+fit1 = arima(gtemp, order=c(1,1,1))   
+fore1 = predict(fit1, 15)   
+nobs = length(gtemp)
+fit2 = arima(gtemp, order=c(1,1,1), xreg=1:nobs)  
+fore2 = predict(fit2, 15, newxreg=(nobs+1):(nobs+15))
+ok=par()
+par(mfrow=c(2,1))
+ts.plot(gtemp,fore1$pred, col=1:2, main="WRONG")
+ts.plot(gtemp,fore2$pred, col=1:2, main="RIGHT")
+
+fit3 = forecast::Arima(gtemp, order=c(1,1,1),include.drift=T)
+fore3 = forecast::forecast(fit3, 15)
+ts.plot(gtemp,fore2$pred, col=1:2, main="RIGHT")
+ts.plot(gtemp,fore3$mean, col=1:2, main="RIGHT")
+```
