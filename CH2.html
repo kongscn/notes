@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="kongs" />
+
+
+<title>Chapter 2: Linear Time Series Analysis and Its Applications</title>
+
+<script src="libs/jquery-1.11.0/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="libs/bootstrap-2.3.2/css/cosmo.min.css" rel="stylesheet" />
+<link href="libs/bootstrap-2.3.2/css/bootstrap-responsive.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-2.3.2/js/bootstrap.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="libs/highlight/default.css"
+      type="text/css" />
+<script src="libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+<div class="container-fluid main-container">
+
+
+<div id="header">
+<h1 class="title">Chapter 2: Linear Time Series Analysis and Its Applications</h1>
+<h4 class="author"><em>kongs</em></h4>
+<h4 class="date"><em>Sunday, July 06, 2014</em></h4>
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#stationary"><span class="toc-section-number">1</span> Stationary</a></li>
+<li><a href="#correlation-and-autocorrelation-function"><span class="toc-section-number">2</span> Correlation and Autocorrelation Function</a><ul>
+<li><a href="#autocorrelation-function-acf"><span class="toc-section-number">2.1</span> Autocorrelation Function (ACF)</a></li>
+<li><a href="#test-individual-acf"><span class="toc-section-number">2.2</span> Test Individual ACF</a></li>
+<li><a href="#portmanteau-test"><span class="toc-section-number">2.3</span> Portmanteau Test</a></li>
+</ul></li>
+<li><a href="#white-noise-and-linear-time-series"><span class="toc-section-number">3</span> White noise and linear time series</a><ul>
+<li><a href="#linear-time-series"><span class="toc-section-number">3.1</span> Linear Time Series</a></li>
+</ul></li>
+<li><a href="#simple-ar-models"><span class="toc-section-number">4</span> Simple AR Models</a><ul>
+<li><a href="#properties-of-ar-models"><span class="toc-section-number">4.1</span> Properties of AR Models</a></li>
+<li><a href="#identifying-ar-models-in-practice"><span class="toc-section-number">4.2</span> Identifying AR Models in Practice</a></li>
+<li><a href="#goodness-of-fit"><span class="toc-section-number">4.3</span> Goodness of Fit</a></li>
+<li><a href="#forecasting"><span class="toc-section-number">4.4</span> Forecasting</a></li>
+</ul></li>
+<li><a href="#ma-models"><span class="toc-section-number">5</span> MA Models</a><ul>
+<li><a href="#properties-of-ma-models"><span class="toc-section-number">5.1</span> Properties of MA models</a></li>
+<li><a href="#identifying-ma-order"><span class="toc-section-number">5.2</span> Identifying MA Order</a></li>
+<li><a href="#estimating-an-ma-model"><span class="toc-section-number">5.3</span> Estimating an MA model</a></li>
+</ul></li>
+<li><a href="#simple-arma-models"><span class="toc-section-number">6</span> Simple ARMA Models</a><ul>
+<li><a href="#properties-of-arma11-models"><span class="toc-section-number">6.1</span> Properties of ARMA(1,1) Models</a></li>
+</ul></li>
+<li><a href="#unitroot-seasonal-models-etc.-to-be-finished"><span class="toc-section-number">7</span> Unitroot, Seasonal Models etc., to be finished</a></li>
+</ul>
+</div>
+
+<p><code class="text-warning">Warning:</code> Hyperlinks of the table of contents may be broken. This hopefully will be fixed by Shinyapps.io later.</p>
+<p><code class="text-primary">Todo:</code> Write a self-sufficient example for ARIMA estimation and diagnostic, using suggested packages.</p>
+<p><code class="text-primary">Todo:</code> Compare different software working process, include <code>Mablab</code>, <code>Stata</code>, <code>Python</code>, <code>SAS</code>.</p>
+<p><code class="text-primary">Todo:</code> Compare different software working process, include <code>Mablab</code>, <code>Stata</code>, <code>Python</code>, <code>SAS</code>.</p>
+<div id="stationary" class="section level1">
+<h1><span class="header-section-number">1</span> Stationary</h1>
+</div>
+<div id="correlation-and-autocorrelation-function" class="section level1">
+<h1><span class="header-section-number">2</span> Correlation and Autocorrelation Function</h1>
+<div id="autocorrelation-function-acf" class="section level2">
+<h2><span class="header-section-number">2.1</span> Autocorrelation Function (ACF)</h2>
+<p><span class="math">\[ \rho_\ell
+= \frac{\text{Cov}(r_t, r_{t-\ell})}{\sqrt{\text{Var}(r_t)\text{Var}(r_{t-\ell})}}
+= \frac{\text{Cov}(r_t, r_{t-\ell})}{\text{Var}(r_t)}
+= \frac{\gamma_\ell}{\gamma_0}
+\]</span></p>
+</div>
+<div id="test-individual-acf" class="section level2">
+<h2><span class="header-section-number">2.2</span> Test Individual ACF</h2>
+</div>
+<div id="portmanteau-test" class="section level2">
+<h2><span class="header-section-number">2.3</span> Portmanteau Test</h2>
+<p>Test jointly that several autocorrelations of <span class="math">\(r_t\)</span> are zero.</p>
+<ul>
+<li><span class="math">\(H_0\)</span>: <span class="math">\(\rho_1 = \rho_2 = ... = \rho_m = 0\)</span></li>
+</ul>
+<p><span class="math">\[ Q(m) = T(T+2)\sum_{\ell=1}^{m} \frac{\hat{\rho}_{\ell}^2}{T - \ell} \]</span></p>
+<pre class="r"><code># library(fBasics)
+# library(forecast)
+source(&#39;util/dataset.R&#39;)</code></pre>
+<pre class="r"><code>df = read.table(dataset$m_ibm3dx2608$url, header=T)
+sibm = df$ibmrtn
+Box.test(sibm, lag=12, type=&#39;Ljung&#39;)</code></pre>
+<pre><code>## 
+##  Box-Ljung test
+## 
+## data:  sibm
+## X-squared = 14.27, df = 12, p-value = 0.2837</code></pre>
+<pre class="r"><code>sibm_acf = acf(sibm)</code></pre>
+<p><img src="images/unnamed-chunk-31.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="672" /></p>
+<pre class="r"><code>sibm_acf</code></pre>
+<pre><code>## 
+## Autocorrelations of series &#39;sibm&#39;, by lag
+## 
+##      0      1      2      3      4      5      6      7      8      9 
+##  1.000  0.040 -0.006 -0.018 -0.031  0.021 -0.041  0.004  0.067  0.054 
+##     10     11     12     13     14     15     16     17     18     19 
+##  0.038  0.013  0.010 -0.062 -0.015 -0.042  0.034  0.028  0.065  0.014 
+##     20     21     22     23     24     25     26     27     28     29 
+## -0.013 -0.018  0.003 -0.069  0.051 -0.005  0.037  0.021  0.034  0.005</code></pre>
+<pre class="r"><code>sibm_pacf = pacf(sibm)</code></pre>
+<p><img src="images/unnamed-chunk-32.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="672" /></p>
+<pre class="r"><code>sibm_pacf</code></pre>
+<pre><code>## 
+## Partial autocorrelations of series &#39;sibm&#39;, by lag
+## 
+##      1      2      3      4      5      6      7      8      9     10 
+##  0.040 -0.008 -0.017 -0.030  0.023 -0.043  0.007  0.067  0.049  0.032 
+##     11     12     13     14     15     16     17     18     19     20 
+##  0.016  0.014 -0.062 -0.005 -0.040  0.033  0.014  0.061 -0.001 -0.012 
+##     21     22     23     24     25     26     27     28     29 
+## -0.013  0.015 -0.064  0.063 -0.011  0.024  0.006  0.034 -0.003</code></pre>
+<pre class="r"><code># If you want acf start with lag 1, as acf(lag=0) is always 1, you can give xlim starting from 1. Likely you can also set ylim to make it looks better.
+acf(sibm, lag=12, xlim=c(1, 12))</code></pre>
+<p><img src="images/unnamed-chunk-33.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="672" /></p>
+<p><code>acf2{astsa}</code> is a handy function to plot both acf and pacf from <span class="math">\(lag=1\)</span>, sharing the same y axis range.</p>
+<pre class="r"><code>acf_pacf = astsa::acf2(sibm)</code></pre>
+<p><img src="images/unnamed-chunk-4.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" width="672" /></p>
+<pre class="r"><code>head(acf_pacf)</code></pre>
+<pre><code>##        ACF  PACF
+## [1,]  0.04  0.04
+## [2,] -0.01 -0.01
+## [3,] -0.02 -0.02
+## [4,] -0.03 -0.03
+## [5,]  0.02  0.02
+## [6,] -0.04 -0.04</code></pre>
+<p>Package <code>{fBasics}</code> also include another two functions that deal with correlations: <code>lacfPlot</code>, and <code>teffectPlot</code>.</p>
+<pre class="r"><code>fBasics::lacfPlot(sibm)</code></pre>
+<p><img src="images/unnamed-chunk-51.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" width="672" /></p>
+<pre class="r"><code>fBasics::teffectPlot(sibm)</code></pre>
+<p><img src="images/unnamed-chunk-52.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" width="672" /></p>
+</div>
+</div>
+<div id="white-noise-and-linear-time-series" class="section level1">
+<h1><span class="header-section-number">3</span> White noise and linear time series</h1>
+<div id="linear-time-series" class="section level2">
+<h2><span class="header-section-number">3.1</span> Linear Time Series</h2>
+<p><span class="math">\[ r_t = \mu + \sum_{i=0}^{\infty} \psi_i a_{t-i} \]</span></p>
+<p>We have,</p>
+<p><span class="math">\[ E(r_t) = \mu, \text{Var}(r_t) = \sigma_a^2 \sum_{i=0}^\infty \psi_i^2 \]</span></p>
+<p>The lag-<span class="math">\(\ell\)</span> autocovariance of <span class="math">\(r_t\)</span> is</p>
+<p><span class="math">\[ \gamma_\ell = \sigma_a^2 \sum_{j=0}^\infty \psi_j \psi_{j+\ell} \]</span></p>
+<p><span class="math">\[ \rho_\ell = \frac{\gamma_\ell}{\gamma_0} 
+= \frac{\sum_{i=0}^\infty \psi_i \psi_{i+\ell}}{1+\sum_{i=1}^\infty \psi_i^2}
+\]</span></p>
+</div>
+</div>
+<div id="simple-ar-models" class="section level1">
+<h1><span class="header-section-number">4</span> Simple AR Models</h1>
+<div id="an-ar1-model" class="section level3">
+<h3><span class="header-section-number">4.0.1</span> An AR(1) Model</h3>
+<p><span class="math">\[ r_t = \phi_0 + \phi_1 r_{t-1} + a_t\]</span> Where <span class="math">\(\{a_t\}\)</span> is assumed to be a white noise series with mean zero and variance <span class="math">\(\sigma_a^2\)</span>.</p>
+<p><span class="math">\[ E(r_t|r_{t-1}) = \phi_0 + \phi_1 r_{t-1}, 
+\text{Var}(r_t|r_{t-1}) = \text{Var}(a_t) = \sigma_a^2\]</span></p>
+</div>
+<div id="arp-model" class="section level3">
+<h3><span class="header-section-number">4.0.2</span> AR(p) Model</h3>
+<p><span class="math">\[ r_t = \phi_0 + \phi_1 r_{t-1} + \ldots + \phi_p r_{t-p} + a_t \]</span></p>
+</div>
+<div id="properties-of-ar-models" class="section level2">
+<h2><span class="header-section-number">4.1</span> Properties of AR Models</h2>
+<div id="ar1-model" class="section level3">
+<h3><span class="header-section-number">4.1.1</span> AR(1) Model</h3>
+<p><span class="math">\[ E(r_t) = \mu = \frac{\phi_0}{1-\phi_1} \]</span></p>
+<p><span class="math">\[ r_t - \mu = \phi_1(r_{t-1}-\mu) + a_t \]</span></p>
+<p><span class="math">\[ \text{Var}(r_t) = \frac{\sigma_a^2}{1-\phi_1^2} \]</span></p>
+<p><span class="math">\[ \rho_\ell = \phi_1 \rho_{\ell - 1} \]</span></p>
+</div>
+<div id="ar2-model" class="section level3">
+<h3><span class="header-section-number">4.1.2</span> AR(2) Model</h3>
+<p><span class="math">\[ (r_t - \mu) = \phi_1(r_{t-1} - \mu) + \phi_2(r_{t-2} - \mu) + a_t \]</span></p>
+<p><span class="math">\[ \rho_1 = \frac{\phi_1}{1-\phi_2} \]</span> <span class="math">\[ \rho_\ell = \phi_1 \rho_{\ell-1} + \phi_2 \rho_{\ell-2} \]</span></p>
+<p><span class="math">\[ (1-\phi_1 B - \phi_2 B^2)\phi_\ell = 0 \]</span></p>
+<p>The solutions to the corresponding second-order polynomial equation are:</p>
+<p><span class="math">\[ x= \frac{\phi_1 \pm \sqrt{\phi_1^2 + 4 \phi_2}}{-2\phi_2} \]</span></p>
+<p><span class="math">\[ k = \frac{2\pi}{\cos^{-1}(\phi_1 / 2\sqrt{-\phi_2})}\]</span></p>
+<p>If we write the solutions as <span class="math">\(a \pm b i\)</span>, then we have <span class="math">\(\phi_1 = 2a, \phi_2 = -(a^2 + b^2)\)</span>, and</p>
+<p><span class="math">\[ k = \frac{2\pi}{\cos^{-1}(a / \sqrt{a^2 + b^2})} \]</span></p>
+<div id="example" class="section level4">
+<h4><span class="header-section-number">4.1.2.1</span> Example</h4>
+<pre class="r"><code>gnp = scan(file=dataset$dgnp82$url)
+gnp_ts = ts(gnp, frequency=4, start=c(1947,2))
+plot(gnp_ts)
+points(gnp_ts, pch=&#39;*&#39;)</code></pre>
+<p><img src="images/unnamed-chunk-6.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" width="672" /></p>
+<pre class="r"><code>gnp_ar = ar(gnp, method=&#39;mle&#39;)
+# Calculate $\phi_0$:
+(1-sum(gnp_ar$ar)) * gnp_ar$x.mean</code></pre>
+<pre><code>## [1] 0.00476</code></pre>
+<pre class="r"><code># Residual standard error:
+sqrt(gnp_ar$var.pred)</code></pre>
+<pre><code>## [1] 0.009709</code></pre>
+<pre class="r"><code># calculate business cycle k
+p1 = c(1, -gnp_ar$ar)
+roots = polyroot(p1)
+roots</code></pre>
+<pre><code>## [1]  1.59+1.064i -1.92-0.000i  1.59-1.064i</code></pre>
+<pre class="r"><code>Mod(roots)</code></pre>
+<pre><code>## [1] 1.913 1.920 1.913</code></pre>
+<pre class="r"><code>k = 2 * pi / acos(1.59023/1.913308)
+k</code></pre>
+<pre><code>## [1] 10.66</code></pre>
+<pre class="r"><code># If using a general arima model with order (ar, 0, 0)
+gnp_arima = arima(gnp, order=c(gnp_ar$order, 0, 0))
+gnp_arima</code></pre>
+<pre><code>## 
+## Call:
+## arima(x = gnp, order = c(gnp_ar$order, 0, 0))
+## 
+## Coefficients:
+##         ar1    ar2     ar3  intercept
+##       0.348  0.179  -0.142      0.008
+## s.e.  0.074  0.078   0.075      0.001
+## 
+## sigma^2 estimated as 9.43e-05:  log likelihood = 565.8,  aic = -1122</code></pre>
+<pre class="r"><code>coefs = gnp_arima$coef
+# \phi_0:
+(1-sum(coefs[1:gnp_ar$order])) * coefs[[&#39;intercept&#39;]]</code></pre>
+<pre><code>## [1] 0.004723</code></pre>
+<pre class="r"><code># Residual standard error:
+sqrt(gnp_arima$sigma2)</code></pre>
+<pre><code>## [1] 0.009709</code></pre>
+<pre class="r"><code># Same logic applies when calculate cycles</code></pre>
+</div>
+</div>
+<div id="stationary-1" class="section level3">
+<h3><span class="header-section-number">4.1.3</span> Stationary</h3>
+</div>
+</div>
+<div id="identifying-ar-models-in-practice" class="section level2">
+<h2><span class="header-section-number">4.2</span> Identifying AR Models in Practice</h2>
+<div id="partial-autocorrelation-function-pacf" class="section level3">
+<h3><span class="header-section-number">4.2.1</span> Partial Autocorrelation Function (PACF)</h3>
+<pre class="r"><code>df = read.table(dataset$m_ibm3dx2608$url, header=T)
+crsp = df$vwrtn
+crsp_pacf = pacf(crsp)</code></pre>
+<p><img src="images/unnamed-chunk-7.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" width="672" /></p>
+<pre class="r"><code>crsp_pacf</code></pre>
+<pre><code>## 
+## Partial autocorrelations of series &#39;crsp&#39;, by lag
+## 
+##      1      2      3      4      5      6      7      8      9     10 
+##  0.115 -0.030 -0.102  0.033  0.062 -0.050  0.031  0.052  0.063  0.005 
+##     11     12     13     14     15     16     17     18     19     20 
+## -0.005  0.011 -0.048 -0.084  0.012 -0.055  0.078  0.021 -0.048 -0.062 
+##     21     22     23     24     25     26     27     28     29 
+## -0.060  0.003 -0.025  0.024 -0.041  0.016 -0.023  0.023  0.029</code></pre>
+<pre class="r"><code>mdl = arima(crsp, order=c(3,0,0))
+mdl</code></pre>
+<pre><code>## 
+## Call:
+## arima(x = crsp, order = c(3, 0, 0))
+## 
+## Coefficients:
+##         ar1     ar2     ar3  intercept
+##       0.116  -0.019  -0.104      0.009
+## s.e.  0.031   0.032   0.032      0.002
+## 
+## sigma^2 estimated as 0.00287:  log likelihood = 1501,  aic = -2992</code></pre>
+<pre class="r"><code>(1-sum(mdl$coef)+mdl$coef[&#39;intercept&#39;])*mdl$coef[&#39;intercept&#39;]  # phi0</code></pre>
+<pre><code>## intercept 
+##  0.009012</code></pre>
+<pre class="r"><code>rtest = Box.test(mdl$residuals, lag=12, type=&#39;Ljung&#39;)
+rtest</code></pre>
+<pre><code>## 
+##  Box-Ljung test
+## 
+## data:  mdl$residuals
+## X-squared = 16.35, df = 12, p-value = 0.1756</code></pre>
+<pre class="r"><code># Adjust degrees of freedom:
+1-pchisq(rtest$statistic, 12-3)</code></pre>
+<pre><code>## X-squared 
+##   0.05988</code></pre>
+<pre class="r"><code># To fix AR(2) coef to zero:
+arima(crsp, order=c(3,0,0), fixed=c(NA,0,NA,NA))</code></pre>
+<pre><code>## Warning: some AR parameters were fixed: setting transform.pars = FALSE</code></pre>
+<pre><code>## 
+## Call:
+## arima(x = crsp, order = c(3, 0, 0), fixed = c(NA, 0, NA, NA))
+## 
+## Coefficients:
+##         ar1  ar2     ar3  intercept
+##       0.114    0  -0.106      0.009
+## s.e.  0.031    0   0.032      0.002
+## 
+## sigma^2 estimated as 0.00288:  log likelihood = 1501,  aic = -2993</code></pre>
+<p><code class="text-warning">Question:</code> How to get p-values of coeffcients?</p>
+<p><code class="text-success">Answer:</code> A general form is <code>pt(abs(model$coef)/sqrt(diag(aa$var.coef)), df.of.resid, lower.tail = F)*2</code>, but you need to find out how to access to coef and stardard of coefs of your model object.</p>
+</div>
+<div id="information-criteria" class="section level3">
+<h3><span class="header-section-number">4.2.2</span> Information Criteria</h3>
+<p>You can use <code>ar(...)$aic</code> and <code>ar(...)$order</code> to get IC based order selection data.</p>
+</div>
+</div>
+<div id="goodness-of-fit" class="section level2">
+<h2><span class="header-section-number">4.3</span> Goodness of Fit</h2>
+</div>
+<div id="forecasting" class="section level2">
+<h2><span class="header-section-number">4.4</span> Forecasting</h2>
+<p>See the following code example.</p>
+<pre class="r"><code>dt = read.table(dataset$m_ibm3dx2608$url, header=T)
+vwval = dt$vwrtn
+vw = ts(vwval, frequency=12, start=c(1926,1))
+x = ts(vw[1:984], start=start(vw), frequency=12)
+actual = ts(vw[-c(1:984)], end=end(vw), frequency=12)
+fit = forecast::Arima(x, order=c(3,0,0))
+fore1 = forecast::forecast(fit, 12)
+plot(x, xlim=c(2000, 2010))
+points(fore1$mean, pch=1, cex=0.8, type=&quot;o&quot;)
+points(actual, pch=20, cex=0.8, type=&quot;o&quot;)
+lines(ts(fore1$upper[,&#39;95%&#39;], end=end(vw), frequency=12), lty=3)
+lines(ts(fore1$lower[,&#39;95%&#39;], end=end(vw), frequency=12), lty=3)</code></pre>
+<p><img src="images/unnamed-chunk-8.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" width="672" /></p>
+<p>To produce exactly the same figure as Figure 2.7 on page57:</p>
+<pre class="r"><code>x = ts(vw[1:984], start=start(vw), frequency=12)
+actual = ts(vw[-c(1:984)], end=end(vw), frequency=12)
+fit = forecast::Arima(x, order=c(3,0,0))
+fore1 = forecast::forecast(fit, 12)
+plot(vw, xlim=c(2000, 2010), type=&quot;o&quot;, pch=20, cex=0.5)
+points(fore1$mean, pch=1, cex=0.8, type=&quot;o&quot;)
+points(actual, pch=20, cex=0.8, type=&quot;o&quot;)
+lines(ts(c(x, fore1$mean), frequency=12, start=start(x)))
+x_upper = ts(c(x, fore1$upper[,&#39;95%&#39;]), start=start(x), frequency=12)
+x_lower = ts(c(x, fore1$lower[,&#39;95%&#39;]), start=start(x), frequency=12)
+lines(x_upper, lty=3)
+lines(x_lower, lty=3)</code></pre>
+<p><img src="images/unnamed-chunk-9.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" width="672" /></p>
+</div>
+</div>
+<div id="ma-models" class="section level1">
+<h1><span class="header-section-number">5</span> MA Models</h1>
+<p><span class="math">\[ r_t = c_0 + a_t - \theta_1 a_{t-1} - /ldots - \theta_q a_{t-2} \]</span></p>
+<div id="properties-of-ma-models" class="section level2">
+<h2><span class="header-section-number">5.1</span> Properties of MA models</h2>
+<div id="stationarity" class="section level3">
+<h3><span class="header-section-number">5.1.1</span> Stationarity</h3>
+<p><span class="math">\[ E(r_t) = c_0 \]</span> <span class="math">\[ \text{Var}(r_t) = (1+\theta_1^2 + \theta_2^2 + \ldots + \theta_q^2)\sigma_a^2 \]</span></p>
+</div>
+<div id="autocorrelation-function" class="section level3">
+<h3><span class="header-section-number">5.1.2</span> Autocorrelation Function</h3>
+<p>For an MA(q) model, <span class="math">\(\rho_\ell = 0, for \ell &gt; q \)</span>.</p>
+</div>
+<div id="invertibility" class="section level3">
+<h3><span class="header-section-number">5.1.3</span> Invertibility</h3>
+<p>Rewriting a zero-mean MA(1) mdel as $ a_t = r_t + <em>1 a</em>{t-1} <span class="math">\(, \)</span>$ a_t = r_t + <em>1 r</em>{t-1} + <em>1^2 r</em>{t-2} + $$</p>
+<p>if $ |_1| &lt; 1$, we say the MA(1) model is <strong>invertible</strong>.</p>
+</div>
+</div>
+<div id="identifying-ma-order" class="section level2">
+<h2><span class="header-section-number">5.2</span> Identifying MA Order</h2>
+<pre class="r"><code>dt = read.table(dataset$m_ibm3dx2608$url, header=T)
+ew = dt$ewrtn
+ew = ts(ew, frequency=12, start=c(1926,1))
+plot(ew, type=&#39;l&#39;)</code></pre>
+<p><img src="images/unnamed-chunk-101.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" width="672" /></p>
+<pre class="r"><code>ew_acf = acf(ew)</code></pre>
+<p><img src="images/unnamed-chunk-102.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" width="672" /></p>
+<pre class="r"><code>ew_acf</code></pre>
+<pre><code>## 
+## Autocorrelations of series &#39;ew&#39;, by lag
+## 
+## 0.0000 0.0833 0.1667 0.2500 0.3333 0.4167 0.5000 0.5833 0.6667 0.7500 
+##  1.000  0.214  0.011 -0.104 -0.059  0.000 -0.041  0.016  0.023  0.130 
+## 0.8333 0.9167 1.0000 1.0833 1.1667 1.2500 1.3333 1.4167 1.5000 1.5833 
+##  0.070 -0.008  0.016 -0.093 -0.095 -0.001 -0.055  0.087  0.033 -0.016 
+## 1.6667 1.7500 1.8333 1.9167 2.0000 2.0833 2.1667 2.2500 2.3333 2.4167 
+## -0.121 -0.080 -0.029 -0.026  0.018 -0.065  0.019  0.023  0.026  0.014</code></pre>
+</div>
+<div id="estimating-an-ma-model" class="section level2">
+<h2><span class="header-section-number">5.3</span> Estimating an MA model</h2>
+<pre class="r"><code>m1 = arima(ew, order=c(0,0,9), fixed=c(NA,0,NA,rep(0,5),NA, NA))
+m1</code></pre>
+<pre><code>## Series: ew 
+## ARIMA(0,0,9) with non-zero mean 
+## 
+## Coefficients:
+##         ma1  ma2     ma3  ma4  ma5  ma6  ma7  ma8    ma9  intercept
+##       0.191    0  -0.120    0    0    0    0    0  0.123      0.012
+## s.e.  0.029    0   0.034    0    0    0    0    0  0.031      0.003
+## 
+## sigma^2 estimated as 0.0051:  log likelihood=1216
+## AIC=-2421   AICc=-2421   BIC=-2367</code></pre>
+</div>
+</div>
+<div id="simple-arma-models" class="section level1">
+<h1><span class="header-section-number">6</span> Simple ARMA Models</h1>
+<p>An ARMA(1,1) Model <span class="math">\[ r_t - \phi_1 r_{t-1} = \phi_0 + a_t - \theta_1 a_{t-1} \]</span></p>
+<div id="properties-of-arma11-models" class="section level2">
+<h2><span class="header-section-number">6.1</span> Properties of ARMA(1,1) Models</h2>
+<p><span class="math">\[ E(r_t) = \mu = \frac{\phi_1}{1-\phi_1} \]</span></p>
+<p><span class="math">\[ \text{Var}(r_t) = 
+\frac{(1-2\phi_1 \theta_1 + \theta_1^2)\sigma_a^2}{1-\phi_1^2} \]</span></p>
+</div>
+</div>
+<div id="unitroot-seasonal-models-etc.-to-be-finished" class="section level1">
+<h1><span class="header-section-number">7</span> Unitroot, Seasonal Models etc., to be finished</h1>
+<p>TO BE FINISHED…</p>
+<pre class="r"><code>timeDate::setRmetricsOptions(myFinCenter = &quot;GMT&quot;)
+charvec = timeDate::timeCalendar()
+set.seed(4711)
+data = matrix(exp(cumsum(rnorm(12, sd = 0.1))))
+tS = timeSeries::timeSeries(data, charvec, units = &quot;tS&quot;)
+tS</code></pre>
+<pre><code>## GMT
+##                tS
+## 2014-01-01 1.1996
+## 2014-02-01 1.3758
+## 2014-03-01 1.5506
+## 2014-04-01 1.4888
+## 2014-05-01 1.4005
+## 2014-06-01 1.2044
+## 2014-07-01 1.3070
+## 2014-08-01 1.1868
+## 2014-09-01 1.1815
+## 2014-10-01 1.2389
+## 2014-11-01 1.1230
+## 2014-12-01 0.9597</code></pre>
+<pre class="r"><code>da = read.table(dataset$d_sp55008$url, header=T)
+sp5 = log(da[,7])
+fUnitRoots::adfTest(sp5, lags=15, type=c(&#39;ct&#39;))</code></pre>
+<pre><code>## 
+## Title:
+##  Augmented Dickey-Fuller Test
+## 
+## Test Results:
+##   PARAMETER:
+##     Lag Order: 15
+##   STATISTIC:
+##     Dickey-Fuller: -1.9946
+##   P VALUE:
+##     0.5807 
+## 
+## Description:
+##  Mon Jul  7 22:26:16 2014 by user:</code></pre>
+<p>Forecasting an ARIMA Model</p>
+<pre class="r"><code>data(gtemp, package=&quot;astsa&quot;)
+fit1 = arima(gtemp, order=c(1,1,1))   
+fore1 = predict(fit1, 15)   
+nobs = length(gtemp)
+fit2 = arima(gtemp, order=c(1,1,1), xreg=1:nobs)  
+fore2 = predict(fit2, 15, newxreg=(nobs+1):(nobs+15))
+ok=par()
+par(mfrow=c(2,1))
+ts.plot(gtemp,fore1$pred, col=1:2, main=&quot;WRONG&quot;)
+ts.plot(gtemp,fore2$pred, col=1:2, main=&quot;RIGHT&quot;)</code></pre>
+<p><img src="images/unnamed-chunk-131.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" width="672" /></p>
+<pre class="r"><code>fit3 = forecast::Arima(gtemp, order=c(1,1,1),include.drift=T)
+fore3 = forecast::forecast(fit3, 15)
+ts.plot(gtemp,fore2$pred, col=1:2, main=&quot;RIGHT&quot;)
+ts.plot(gtemp,fore3$mean, col=1:2, main=&quot;RIGHT&quot;)</code></pre>
+<p><img src="images/unnamed-chunk-132.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" width="672" /></p>
+</div>
+
+<section class="comment">
+<div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rnotes'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with --self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

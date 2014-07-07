@@ -1,0 +1,9 @@
+---
+title: "test"
+author: "kongs"
+date: "Sunday, July 06, 2014"
+output: html_document
+---
+world
+$$ k = \frac{2\pi}{\cos^{-1}(\phi_1 / 2\sqrt{-\phi_2})}
+$$

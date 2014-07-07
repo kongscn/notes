@@ -1,0 +1,60 @@
+---
+title: "Chapter 1 Financial Time Series and Their Characteristics"
+author: "kongs"
+date: "Sunday, July 06, 2014"
+---
+
+```{r, include=FALSE, cache = FALSE}
+source("util/knitropts.R")
+```
+
+# Asset Returns
+
+Why returns instead of prices? Two main reasons Campbell, Lo, MacKinlay(1997)
+* Return of an asset is a complete and scale-free summary
+* Return series are easier to handle than price series
+
+## Returns Summary
+$$ r_t = ln(1+R_t) $$
+$$ R_t=e^{r_t} - 1 $$
+
+## Statistics
+
+```{r, warning=FALSE}
+require(fBasics, quietly=TRUE, warn.conflicts=FALSE)
+source('util/dataset.R')
+da = read.table(dataset$d_ibm3dx7008$url, header=TRUE)
+dim(da)
+ibm = da[, 2]
+sibm = ibm * 100
+basicStats(sibm)
+libm = log(ibm+1)*100
+t.test(libm)
+normalTest(libm, method='jb')
+```
+
+### Other descriptive statistics functions
+```{r}
+pastecs::stat.desc(sibm)
+psych::describe(sibm)
+```
+
+
+## Processses Considered
+
+```{r}
+# IBM
+par(mfcol=c(2,1))
+libm = log(1+ibm)
+plot(ibm, type='l')
+plot(libm, type='l')
+par(mfcol=c(2,1))
+sindex = da[,5]
+lindex = log(1+sindex)
+plot(sindex, type='l')
+plot(lindex, type='l')
+```
+
+# Exercises
+
+
