@@ -1,9 +1,11 @@
 html_document:
-  theme: cosmo
+  theme: flatly
   self_contained: false
   toc: true
   toc_depth: 2
   number_sections: true
   lib_dir: libs
   includes:
+    in_header: include/in_header.html
+    before_body: include/before_body.html
     after_body: include/after_body.html
