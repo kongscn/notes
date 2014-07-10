@@ -1,7 +1,13 @@
-learn_fts
-=========
+---
+title: "About These Notes"
+author: "kongs"
+date: "Monday, July 07, 2014"
+html_document:
+  toc: false
+  number_sections: false
+---
 
-#### [View](http://kongscn.github.io/notes/index.html) this note online.
+[View](http://kongscn.github.io/notes/index.html) this note online.
 
 Notes of reading Analysis of Financial Time Series 3rd Edition by Ruey S. Tsay
 
