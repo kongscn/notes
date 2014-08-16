@@ -8,12 +8,17 @@ date: "Monday, July 07, 2014"
 source("util/knitropts.R")
 ```
 
+Here are some of my reading notes.
 
-This is my notes of learning *Analysis of Financial Time Series*,
+
+# Analysis of Financial Time Series
+
+Notes of learning *Analysis of Financial Time Series*,
 by Tsay, 3rd edition.
 
-[Chapter 1](CH1.html) Financial Time Series and Their Characteristics
+[Chapter 1](AFTS/CH1.html) Financial Time Series and Their Characteristics
 
-[Chapter 2](CH2.html) Linear Time Series Analysis and Its Applications
+[Chapter 2](AFTS/CH2.html) Linear Time Series Analysis and Its Applications
 
 To be continued...
+
