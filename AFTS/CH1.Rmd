@@ -22,7 +22,7 @@ $$ R_t=e^{r_t} - 1 $$
 
 ```{r, warning=FALSE}
 require(fBasics, quietly=TRUE, warn.conflicts=FALSE)
-source('util/dataset.R')
+source('util/AFTS_dataset.R')
 da = read.table(dataset$d_ibm3dx7008$url, header=TRUE)
 dim(da)
 ibm = da[, 2]

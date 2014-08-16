@@ -178,7 +178,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <p><span class="math">\[ Q(m) = T(T+2)\sum_{\ell=1}^{m} \frac{\hat{\rho}_{\ell}^2}{T - \ell} \]</span></p>
 <pre class="r"><code># library(fBasics)
 # library(forecast)
-source(&#39;util/dataset.R&#39;)</code></pre>
+source(&#39;util/AFTS_dataset.R&#39;)</code></pre>
 <pre class="r"><code>df = read.table(dataset$m_ibm3dx2608$url, header=T)
 sibm = df$ibmrtn
 Box.test(sibm, lag=12, type=&#39;Ljung&#39;)</code></pre>
@@ -532,7 +532,7 @@ fUnitRoots::adfTest(sp5, lags=15, type=c(&#39;ct&#39;))</code></pre>
 ##     0.5807 
 ## 
 ## Description:
-##  Thu Jul 10 12:52:00 2014 by user:</code></pre>
+##  Sat Aug 16 17:22:41 2014 by user:</code></pre>
 <p>Forecasting an ARIMA Model</p>
 <pre class="r"><code>data(gtemp, package=&quot;astsa&quot;)
 fit1 = arima(gtemp, order=c(1,1,1))   

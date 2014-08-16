@@ -141,7 +141,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="statistics" class="section level2">
 <h2><span class="header-section-number">1.2</span> Statistics</h2>
 <pre class="r"><code>require(fBasics, quietly=TRUE, warn.conflicts=FALSE)
-source(&#39;util/dataset.R&#39;)
+source(&#39;util/AFTS_dataset.R&#39;)
 da = read.table(dataset$d_ibm3dx7008$url, header=TRUE)
 dim(da)</code></pre>
 <pre><code>## [1] 9845    5</code></pre>
@@ -190,7 +190,7 @@ t.test(libm)</code></pre>
 ##     Asymptotic p Value: &lt; 2.2e-16 
 ## 
 ## Description:
-##  Thu Jul 10 12:51:38 2014 by user:</code></pre>
+##  Sat Aug 16 17:22:06 2014 by user:</code></pre>
 <div id="other-descriptive-statistics-functions" class="section level3">
 <h3><span class="header-section-number">1.2.1</span> Other descriptive statistics functions</h3>
 <pre class="r"><code>pastecs::stat.desc(sibm)</code></pre>
