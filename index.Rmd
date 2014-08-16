@@ -2,6 +2,10 @@
 title: "Note of Analysis of Financial Time Series by Tsay"
 author: "kongs"
 date: "Monday, July 07, 2014"
+output:
+  html_document:
+    toc: false
+    number_sections: false
 ---
 
 ```{r, include=FALSE, cache = FALSE}
@@ -10,8 +14,9 @@ source("util/knitropts.R")
 
 Here are some of my reading notes.
 
+# Time Series Analysis
 
-# Analysis of Financial Time Series
+## Analysis of Financial Time Series
 
 Notes of learning *Analysis of Financial Time Series*,
 by Tsay, 3rd edition.
