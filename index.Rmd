@@ -25,7 +25,7 @@ by Tsay, 3rd edition.
 
 [Chapter 2](AFTS/CH2.html) Linear Time Series Analysis and Its Applications
 
-To be continued...
+growing...
 
 
 # Predictive Modeling
@@ -35,4 +35,7 @@ To be continued...
 Notes of learning [*Applied Predictive Modeling*](http://www.amazon.com/Applied-Predictive-Modeling-Max-Kuhn/dp/1461468485)
 by Kuhn, Johnson.
 
+[Chapter 3](APM/CH03.html) Data Pre-processing
+
+growing...
 
