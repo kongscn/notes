@@ -1,0 +1,11 @@
+pre .comment {
+    color: gray;
+}
+
+pre code {
+    color: gray;
+}
+
+p {
+  color: black;
+}

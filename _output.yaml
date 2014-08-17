@@ -1,5 +1,6 @@
 html_document:
-  theme: flatly
+  theme: cosmo
+  css: include/custom.css
   self_contained: false
   toc: true
   toc_depth: 2

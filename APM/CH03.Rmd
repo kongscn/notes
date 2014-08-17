@@ -1,0 +1,208 @@
+---
+title: "CH03 Data Pre-processing"
+author: "Shel Kong"
+date: "Sunday, August 17, 2014"
+---
+
+```{r preparation}
+library(AppliedPredictiveModeling)
+data(segmentationOriginal)
+```
+
+Basic selection methods and tips. 
+Check [here](http://www.statmethods.net/management/subset.html) 
+for a general introduction.
+
+```{r selection}
+segData = subset(segmentationOriginal, Case=="Train")
+cellID = segData$Cell
+case = segData$Case
+class = segData$Class
+# Remove the  columns, 
+# this can also be done by
+# segData = segData[, -(1:3)]
+# which is prefered in programming
+segData = subset(segData, select=-(Cell:Class))
+
+statusColNum = grep("Status", names(segData))
+segData = segData[, -statusColNum]
+```
+
+
+
+# Data Transformations for Individual Predictors
+
+Data preparation can make or break a model's predictive ability. 
+How the predictors enter the mdel is important.
+
+## Centering and Scaling
+
+Most liner models benefit from standardizing predictors.
+The only real downside is  a loss of interpretability
+of the individual values since the data are 
+no longer in the original units.
+
+## Transformations to Resolve Skewness
+
+$$ \text{skewness} = \frac{\sum (x_i - \bar{x})^3}{(n-1) v^{3/2}} $$
+where 
+$$ v = \frac{\sum (x_i - \bar{x})^2}{n-1} $$
+
+Box-Cox Transormations(Box and Cox, 1964) can be used to resolve skewness:
+
+$$
+x^* = \left\{
+  \begin{array}{l l}
+    \frac{x^\lambda - 1}{\lambda} & \quad \text{if $\lambda \neq 0$}\\
+    \log(x) & \quad \text{if $\lambda=0$}
+  \end{array} \right.
+$$
+
+To calculate skewness:
+```{r}
+library(e1071)
+skewness(segData$AngleCh1)
+head(sapply(segData, skewness))
+```
+
+Box-Cox transformation:
+```{r}
+hist(segData$PerimCh1, breaks=30, main="Before BoxCox Transformation")
+
+library(caret)
+periTrans = BoxCoxTrans(segData$PerimCh1)
+periTrans
+
+nsk = predict(periTrans, segData$PerimCh1)
+hist(nsk, breaks=30, main="After BoxCox Transformation")
+```
+
+
+
+# Data Transormations for Multiple Predictors
+
+## Transformations to Resolve Outliers
+
+When outliers are present, first make sure that the values are scientiffically valid and that no data recording errors have occurred.
+Great care should be taken not to hastily remove or change values, especially if the sample size is small.
+With small sample sizes, apparent outliers might be result of a skewed distribution where there are not yet enough data to see the skewness.
+
+Tree-based classifications suppport vector machines for classification generally are resistant to outliers.
+
+**Spatial sign** transformation is designed to resolve outliers:
+$$ x_{ij}^* = \frac{x_{ij}}{\sum^P_{j=1} x^2_{ij}} $$
+
+```{r}
+set.seed(123)
+x = rnorm(1000)
+y = 10 * x + rnorm(1000)
+y[1:3] = 5 * y[1:3] 
+d = data.frame(x=x, y=y)
+plot(d, main="With Outliers")
+points(x=d[1:3, "x"], y=d[1:3, "y"], col="red", pch=16)
+
+dTrans = preProcess(d, method=c("spatialSign"))
+newd = predict(dTrans, d)
+plot(newd)
+points(x=newd[1:3, "x"], y=newd[1:3, "y"], col="red", pch=16)
+```
+
+## Data Reduction and Feature Extraction
+
+The main method of dim reduction is PCA, 
+but it is a *unsupervised* transformation.
+
+```{r}
+trans = preProcess(segData, 
+                   method=c("BoxCox", "center", "scale", "pca"))
+trans
+segNew = predict(trans, segData)
+head(segNew[, 1:5])
+
+```
+
+
+# Dealing with Missing Values
+
+First modeler should be ware about why values are missing, 
+as missing itself can be a kind of message.
+Several methods can be used to impute missing values, 
+as shown below.
+
+```{r}
+d[21:25, "y"] <- NA
+d[20:27, ]
+
+trans = preProcess(d, method=c("center", "scale", "medianImpute"))
+newd = predict(trans, d)
+newd[20:27,]
+plot(newd)
+points(newd[21:25,], pch=16, col="red")
+
+trans = preProcess(d, method=c("center", "scale", "knnImpute"))
+newd = predict(trans, d)
+newd[20:27,]
+plot(newd)
+points(newd[21:25,], pch=16, col="red")
+```
+
+
+# Removing Predictors
+
+## Zero Variance Predictors
+
+Zero or near zero variance predictors carry very limited infomation,
+while they can dramatically affect some linear models performance,
+thus one should consider removing them.
+
+```{r}
+nearZeroVar(segData)
+
+segData$test = 1
+nzs = nearZeroVar(segData)
+segData = subset(segData, select=-nzs)
+```
+
+## Betwee-Predictor Correlations
+
+Many linear models are exposed to colinear problems. Except for dimension
+reduction methods, one can also consider about removing high correlated predictors.
+
+```{r}
+corrs = cor(segData)
+dim(corrs)
+library(corrplot)
+corrplot(corrs)
+
+highCorr = findCorrelation(corrs, cutoff=.75)
+head(highCorr)
+length(highCorr)
+filtered = segData[, -highCorr]
+
+```
+
+
+# Adding Predictors
+
+It's common to encode category predictors to set of dummy variables.
+
+```{r}
+# Let me make a categorical var first...
+data(cars, package="caret")
+names(cars)
+subCars = subset(cars, select=c(Price, Mileage, convertible:wagon))
+categoryNames = names(subset(cars, select=convertible:wagon))
+type = as.matrix(subset(subCars, select=convertible:wagon)) %*% 1:5
+subCars$Type = factor(type, labels=categoryNames)
+subCars = subset(subCars, select=c(Price, Mileage, Type))
+head(subCars)
+
+dummyTrans = dummyVars(~Price+Mileage+Type+Mileage:Type, data=subCars, levelsOnly=T)
+dummySubCars = predict(dummyTrans, subCars)
+head(dummySubCars)
+```
+
+
+# Binning Predictors
+
+This transformation should be AVOIDED.
