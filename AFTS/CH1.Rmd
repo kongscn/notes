@@ -1,6 +1,6 @@
 ---
 title: "Chapter 1 Financial Time Series and Their Characteristics"
-author: "kongs"
+author: "Shel Kong"
 date: "Sunday, July 06, 2014"
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: "Chapter 2: Linear Time Series Analysis and Its Applications"
-author: "kongs"
+author: "Shel Kong"
 date: "Sunday, July 06, 2014"
 ---
 

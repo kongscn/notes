@@ -1,6 +1,6 @@
 ---
-title: "Note of Analysis of Financial Time Series by Tsay"
-author: "kongs"
+title: "Learning Notes"
+author: "Shel Kong"
 date: "Monday, July 07, 2014"
 output:
   html_document:
@@ -18,7 +18,7 @@ Here are some of my reading notes.
 
 ## Analysis of Financial Time Series
 
-Notes of learning *Analysis of Financial Time Series*,
+Notes of learning [*Analysis of Financial Time Series*](http://www.amazon.com/Analysis-Financial-Time-Ruey-Tsay/dp/0470414359) 
 by Tsay, 3rd edition.
 
 [Chapter 1](AFTS/CH1.html) Financial Time Series and Their Characteristics
@@ -26,4 +26,13 @@ by Tsay, 3rd edition.
 [Chapter 2](AFTS/CH2.html) Linear Time Series Analysis and Its Applications
 
 To be continued...
+
+
+# Predictive Modeling
+
+## Applied Predictive Modeling
+
+Notes of learning [*Applied Predictive Modeling*](http://www.amazon.com/Applied-Predictive-Modeling-Max-Kuhn/dp/1461468485)
+by Kuhn, Johnson.
+
 
