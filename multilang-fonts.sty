@@ -1,0 +1,385 @@
+% multilang-fonts.sty
+% Modern multilingual font configuration package
+% Supports: English, Simplified/Traditional Chinese, Japanese, Korean
+
+\NeedsTeXFormat{LaTeX2e}[2020/10/01]
+\ProvidesPackage{multilang-fonts}[2025/09/17 v2.1 multilingual font configuration]
+
+%===============================================================================
+% Required Packages
+%===============================================================================
+\RequirePackage{fontspec}
+\RequirePackage{xeCJK}
+\RequirePackage{xpinyin}  % For pinyin support
+\RequirePackage{ruby}     % For furigana/ruby text
+\RequirePackage{setspace}
+\RequirePackage{etoolbox}
+\RequirePackage{ifthen}
+\RequirePackage{kvoptions}  % For key-value options
+
+%===============================================================================
+% Package Options
+%===============================================================================
+\SetupKeyvalOptions{
+    family=mlf,
+    prefix=mlf@
+}
+
+% Language options
+\DeclareBoolOption[false]{sc}      % Simplified Chinese
+\DeclareBoolOption[false]{tc}      % Traditional Chinese
+\DeclareBoolOption[false]{hk}      % Hong Kong Chinese
+\DeclareBoolOption[false]{jp}      % Japanese
+\DeclareBoolOption[false]{kr}      % Korean
+\DeclareStringOption[sc]{default}  % Default language
+\DeclareStringOption[1.25]{linespacing}  % Line spacing
+\DeclareBoolOption[true]{autospacing}   % Auto spacing in lists
+\DeclareStringOption[-1ex]{rubysep}
+
+% Font family options
+\DeclareStringOption[noto]{fontset}     % Font set choice
+\DeclareBoolOption[false]{customfonts}  % Allow custom font definitions
+
+\ProcessKeyvalOptions*
+
+%===============================================================================
+% Font Detection and Fallback System
+%===============================================================================
+
+% Check if fonts exist
+\newcommand{\mlf@checkfont}[2]{%
+    \IfFontExistsTF{#1}{%
+        \PackageInfo{multilang-fonts}{Font "#1" found}%
+    }{%
+        \PackageWarning{multilang-fonts}{Font "#1" not found, using fallback "#2"}%
+    }%
+}
+
+\renewcommand{\rubysep}{\mlf@rubysep}
+
+% Font set definitions
+\ifthenelse{\equal{\mlf@fontset}{noto}}{%
+    % Noto fonts (default)
+    \def\mlf@western@main{Noto Serif}
+    \def\mlf@western@sans{Noto Sans}
+    \def\mlf@western@mono{Noto Sans Mono}
+    \def\mlf@cjk@sc@main{Noto Serif CJK SC}
+    \def\mlf@cjk@sc@sans{Noto Sans CJK SC}
+    \def\mlf@cjk@sc@mono{Noto Sans Mono CJK SC}
+    \def\mlf@cjk@tc@main{Noto Serif CJK TC}
+    \def\mlf@cjk@tc@sans{Noto Sans CJK TC}
+    \def\mlf@cjk@tc@mono{Noto Sans Mono CJK TC}
+    \def\mlf@cjk@hk@main{Noto Serif CJK HK}
+    \def\mlf@cjk@hk@sans{Noto Sans CJK HK}
+    \def\mlf@cjk@hk@mono{Noto Sans Mono CJK HK}
+    \def\mlf@cjk@jp@main{Noto Serif CJK JP}
+    \def\mlf@cjk@jp@sans{Noto Sans CJK JP}
+    \def\mlf@cjk@jp@mono{Noto Sans Mono CJK JP}
+    \def\mlf@cjk@kr@main{Noto Serif CJK KR}
+    \def\mlf@cjk@kr@sans{Noto Sans CJK KR}
+    \def\mlf@cjk@kr@mono{Noto Sans Mono CJK KR}
+}{%
+    % Add more font sets here if needed
+    \PackageError{multilang-fonts}{Unknown font set '\mlf@fontset'}{%
+        Available font sets: noto}
+}
+
+%===============================================================================
+% Western Font Configuration
+%===============================================================================
+
+% Set main Western fonts with fallback
+\IfFontExistsTF{\mlf@western@main}{%
+    \setmainfont{\mlf@western@main}[
+        Ligatures=TeX,
+        Scale=1.0,
+        Numbers=Proportional
+    ]
+}{%
+    \setmainfont{Latin Modern Roman}[Ligatures=TeX]
+}
+
+\IfFontExistsTF{\mlf@western@sans}{%
+    \setsansfont{\mlf@western@sans}[
+        Ligatures=TeX,
+        Scale=MatchLowercase
+    ]
+}{%
+    \setsansfont{Latin Modern Sans}[Ligatures=TeX]
+}
+
+\IfFontExistsTF{\mlf@western@mono}{%
+    \setmonofont{\mlf@western@mono}[
+        Scale=MatchLowercase,
+        Ligatures=NoCommon
+    ]
+}{%
+    \setmonofont{Noto Mono}[Scale=MatchLowercase]
+}
+
+%===============================================================================
+% CJK Font Families Definition (Preamble Only)
+%===============================================================================
+
+% Set default CJK fonts
+\setCJKmainfont{\mlf@cjk@sc@main}[
+    % BoldFont={\mlf@cjk@sc@main@bold},
+    ItalicFont={\mlf@cjk@sc@main},
+    Script=CJK,
+    Language=Chinese Simplified
+]
+\setCJKsansfont{\mlf@cjk@sc@sans}[
+    Script=CJK,
+    Language=Chinese Simplified
+]
+\setCJKmonofont{\mlf@cjk@sc@mono}[
+    Script=CJK,
+    Language=Chinese Simplified
+]
+
+% Define CJK font families for each language
+% Simplified Chinese
+\newCJKfontfamily\scrmfont{\mlf@cjk@sc@main}[
+    BoldFont={\mlf@cjk@sc@sans},
+    Language=Chinese Simplified
+]
+\newCJKfontfamily\scsfont{\mlf@cjk@sc@sans}[Language=Chinese Simplified]
+\newCJKfontfamily\scttfont{\mlf@cjk@sc@mono}[Language=Chinese Simplified]
+
+% Traditional Chinese
+\newCJKfontfamily\tcrmfont{\mlf@cjk@tc@main}[
+    BoldFont={\mlf@cjk@tc@sans},
+    Language=Chinese Traditional
+]
+\newCJKfontfamily\tcsfont{\mlf@cjk@tc@sans}[Language=Chinese Traditional]
+\newCJKfontfamily\tcttfont{\mlf@cjk@tc@mono}[Language=Chinese Traditional]
+
+% Hong Kong
+\newCJKfontfamily\hkrmfont{\mlf@cjk@hk@main}[
+    BoldFont={\mlf@cjk@hk@sans},
+    Language=Chinese Hong Kong
+]
+\newCJKfontfamily\hksfont{\mlf@cjk@hk@sans}[Language=Chinese Hong Kong]
+\newCJKfontfamily\hkttfont{\mlf@cjk@hk@mono}[Language=Chinese Hong Kong]
+
+% Japanese
+\newCJKfontfamily\jprmfont{\mlf@cjk@jp@main}[
+    BoldFont={\mlf@cjk@jp@sans},
+    Language=Japanese
+]
+\newCJKfontfamily\jpsfont{\mlf@cjk@jp@sans}[Language=Japanese]
+\newCJKfontfamily\jpttfont{\mlf@cjk@jp@mono}[Language=Japanese]
+
+% Korean
+\newCJKfontfamily\krrmfont{\mlf@cjk@kr@main}[
+    BoldFont={\mlf@cjk@kr@sans},
+    Language=Korean
+]
+\newCJKfontfamily\krsfont{\mlf@cjk@kr@sans}[Language=Korean]
+\newCJKfontfamily\krttfont{\mlf@cjk@kr@mono}[Language=Korean]
+
+%===============================================================================
+% Current Language Tracking
+%===============================================================================
+
+% Variable to track current language
+\newcommand{\mlf@currentlang}{unknown}
+
+%===============================================================================
+% Language Configuration Commands (Document Body Safe)
+%===============================================================================
+
+% Internal command for setting CJK configuration
+\newcommand{\mlf@setcjkconfig}[1]{%
+    \xeCJKsetup{
+        PunctStyle=#1,
+        CJKglue=\hskip 0.05em plus 0.05em minus 0.02em,
+        CJKecglue=\hskip 0.1em plus 0.05em minus 0.05em,
+        CheckSingle=true,
+        PlainEquation=true,
+        AutoFakeBold=1.5,
+        AutoFakeSlant=0.15
+    }%
+}
+
+% Language switching commands (safe for document body)
+\newcommand{\langSC}{%
+    \CJKfamily+{scrmfont}%
+    \mlf@setcjkconfig{kaiming}%
+    \setstretch{\mlf@linespacing}%
+    \renewcommand{\mlf@currentlang}{Chinese Simplified}%
+}
+
+\newcommand{\langTC}{%
+    \CJKfamily+{tcrmfont}%
+    \mlf@setcjkconfig{kaiming}%
+    \setstretch{\mlf@linespacing}%
+    \renewcommand{\mlf@currentlang}{Chinese Traditional}%
+}
+
+\newcommand{\langHK}{%
+    \CJKfamily+{hkrmfont}%
+    \mlf@setcjkconfig{kaiming}%
+    \setstretch{\mlf@linespacing}%
+    \renewcommand{\mlf@currentlang}{Chinese Hong Kong}%
+}
+
+\newcommand{\langJP}{%
+    \CJKfamily+{jprmfont}%
+    \mlf@setcjkconfig{kaiming}%
+    \xeCJKsetup{CJKglue=\hskip 0em plus 0.08em minus 0.01em}%
+    \setstretch{\mlf@linespacing}%
+    \renewcommand{\mlf@currentlang}{Japanese}%
+}
+
+\newcommand{\langKR}{%
+    \CJKfamily+{krrmfont}%
+    \mlf@setcjkconfig{kaiming}%
+    \setstretch{\mlf@linespacing}%
+    \renewcommand{\mlf@currentlang}{Korean}%
+}
+
+%===============================================================================
+% Environment Support
+%===============================================================================
+
+% Language-specific environments
+\newenvironment{SCtext}{\langSC}{\par}
+\newenvironment{TCtext}{\langTC}{\par}
+\newenvironment{HKtext}{\langHK}{\par}
+\newenvironment{JPtext}{\langJP}{\par}
+\newenvironment{KRtext}{\langKR}{\par}
+
+% Mixed language support - inline commands
+\DeclareRobustCommand{\zhcn}[1]{{\langSC #1}}  % Simplified Chinese inline
+\DeclareRobustCommand{\zhtw}[1]{{\langTC #1}}  % Traditional Chinese inline
+\DeclareRobustCommand{\zhhk}[1]{{\langHK #1}}  % Hong Kong inline
+\DeclareRobustCommand{\ja}[1]{{\langJP #1}}    % Japanese inline
+\DeclareRobustCommand{\ko}[1]{{\langKR #1}}    % Korean inline
+
+% Alternative longer names
+\DeclareRobustCommand{\simplifiedchinese}[1]{{\langSC #1}}
+\DeclareRobustCommand{\traditionalchinese}[1]{{\langTC #1}}
+\DeclareRobustCommand{\japanese}[1]{{\langJP #1}}
+\DeclareRobustCommand{\korean}[1]{{\langKR #1}}
+
+%===============================================================================
+% Auto Spacing Configuration
+%===============================================================================
+
+\ifmlf@autospacing
+    \AtBeginEnvironment{itemize}{\singlespacing}
+    \AtBeginEnvironment{enumerate}{\singlespacing}
+    \AtBeginEnvironment{description}{\singlespacing}
+    \AtBeginEnvironment{quote}{\setstretch{1.2}}
+    \AtBeginEnvironment{quotation}{\setstretch{1.2}}
+    \AtBeginEnvironment{verse}{\setstretch{1.2}}
+\fi
+
+%===============================================================================
+% Ruby/Furigana Enhancement
+%===============================================================================
+
+% Better ruby command for Japanese
+\newcommand{\furigana}[2]{%
+    \ruby{#1}{{\tiny #2}}%
+}
+
+% Pinyin support for Chinese
+\newcommand{\pinyinx}[2]{%
+    \ruby{#1}{{\tiny #2}}%
+}
+
+%===============================================================================
+% Font Style Commands for CJK
+%===============================================================================
+
+% Sans serif versions
+\newcommand{\langSCsans}{\CJKfamily+{scsfont}}
+\newcommand{\langTCsans}{\CJKfamily+{tcsfont}}
+\newcommand{\langHKsans}{\CJKfamily+{hksfont}}
+\newcommand{\langJPsans}{\CJKfamily+{jpsfont}}
+\newcommand{\langKRsans}{\CJKfamily+{krsfont}}
+
+% Monospace versions
+\newcommand{\langSCmono}{\CJKfamily+{scttfont}}
+\newcommand{\langTCmono}{\CJKfamily+{tcttfont}}
+\newcommand{\langHKmono}{\CJKfamily+{hkttfont}}
+\newcommand{\langJPmono}{\CJKfamily+{jpttfont}}
+\newcommand{\langKRmono}{\CJKfamily+{krttfont}}
+
+%===============================================================================
+% Apply Default Language Setting
+%===============================================================================
+
+\AtEndOfPackage{%
+    \ifthenelse{\equal{\mlf@default}{sc}}{\langSC}{}%
+    \ifthenelse{\equal{\mlf@default}{tc}}{\langTC}{}%
+    \ifthenelse{\equal{\mlf@default}{hk}}{\langHK}{}%
+    \ifthenelse{\equal{\mlf@default}{jp}}{\langJP}{}%
+    \ifthenelse{\equal{\mlf@default}{kr}}{\langKR}{}%
+}
+
+% Legacy option support
+\ifmlf@sc\AtEndOfPackage{\langSC}\fi
+\ifmlf@tc\AtEndOfPackage{\langTC}\fi
+\ifmlf@hk\AtEndOfPackage{\langHK}\fi
+\ifmlf@jp\AtEndOfPackage{\langJP}\fi
+\ifmlf@kr\AtEndOfPackage{\langKR}\fi
+
+%===============================================================================
+% Utility Commands
+%===============================================================================
+
+%===============================================================================
+% Font Information Commands
+%===============================================================================
+
+% Get font name helper
+\makeatletter
+\newcommand{\mlf@getfontname}{%
+    \expandafter\string\the\font
+}
+\makeatother
+
+% % Show current fonts in the document (visible output)
+% \newcommand{\printcurrentfonts}{%
+%     \par\noindent
+%     \fbox{%
+%         \parbox{0.95\textwidth}{%
+%             \textbf{Current Font Configuration:}\\[0.5em]
+%             \textbf{Language Mode:} \mlf@currentlang\\
+%             \textbf{Western Font:} \fontname\font\\
+%             \textbf{CJK Family:} \CJKfamilydefault\\
+%             \textbf{Line Spacing:} \mlf@linespacing\\
+%             \textbf{Font Set:} \mlf@fontset
+%         }%
+%     }%
+%     \par
+% }
+
+% Command to check current CJK font
+\newcommand{\showcurrentfonts}{%
+    \typeout{Current Western font: \fontname\font}%
+    \typeout{Current CJK family: \CJKfamilydefault}%
+}
+
+% Reset to default configuration
+\newcommand{\resetfonts}{%
+    \normalfont
+    \setstretch{\mlf@linespacing}
+}
+
+% Provide info about available commands
+\newcommand{\mlfhelp}{%
+    \typeout{===============================================}%
+    \typeout{multilang-fonts package commands:}%
+    \typeout{Language switching: \string\langSC, \string\langTC, \string\langJP, \string\langKR}%
+    \typeout{Short aliases: \string\Lsc, \string\Ltc, \string\Ljp, \string\Lkr}%
+    \typeout{Inline text: \string\zhcn\{...\}, \string\zhtw\{...\}, \string\ja\{...\}, \string\ko\{...\}}%
+    \typeout{Environments: SCtext, TCtext, JPtext, KRtext}%
+    \typeout{Font styles: \string\langSCsans, \string\langSCmono, etc.}%
+    \typeout{===============================================}%
+}
+
+\endinput

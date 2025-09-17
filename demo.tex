@@ -1,0 +1,43 @@
+\documentclass{article}
+\usepackage[default=sc]{multilang-fonts}
+
+\begin{document}
+
+English text with \zhcn{简体中文 \textbf{简体中文}} and \ja{日本語} inline.
+
+% Or use the longer form
+Some \japanese{こんにちは} and \korean{안녕하세요} text.
+
+try furigana: \furigana{骨}{ほね}; try ruby: \ruby{骨}{ほね}; try pinyin: \pinyinx{骨}{hú}
+
+
+\begin{SCtext}
+    默认简体中文 骨，\textbf{骨}
+\end{SCtext}
+
+\begin{TCtext}
+    默认繁体中文 骨，\textbf{骨}
+\end{TCtext}
+
+\begin{HKtext}
+    默认香港中文 骨，\textbf{骨}
+\end{HKtext}
+
+\begin{JPtext}
+    默认日文 骨，\textbf{骨}
+\end{JPtext}
+
+\begin{KRtext}
+    默认韩文 骨，\textbf{骨}
+\end{KRtext}
+
+
+\begin{itemize}
+    \item \texttt{sc:} {\langSC 骨, 為, 戶, 衞, 敍, 佔, 今, 換, 醜, 悉, 習, 躺, 聶, 釀, 夢, 進, 羞, 務, 充, 卸, 換, 誕, 豬, 啟, 汙}
+    \item \texttt{tc:} {\langTC 骨, 為, 戶, 衞, 敍, 佔, 今, 換, 醜, 悉, 習, 躺, 聶, 釀, 夢, 進, 羞, 務, 充, 卸, 換, 誕, 豬, 啟, 汙}
+    \item \texttt{hk:} {\langHK 骨, 為, 戶, 衞, 敍, 佔, 今, 換, 醜, 悉, 習, 躺, 聶, 釀, 夢, 進, 羞, 務, 充, 卸, 換, 誕, 豬, 啟, 汙}
+    \item \texttt{jp:} {\langJP 骨, 為, 戶, 衞, 敍, 佔, 今, 換, 醜, 悉, 習, 躺, 聶, 釀, 夢, 進, 羞, 務, 充, 卸, 換, 誕, 豬, 啟, 汙}
+\end{itemize}
+
+
+\end{document}
