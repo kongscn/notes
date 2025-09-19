@@ -1,4 +1,4 @@
-.PHONY: all clean lang-jp lang-en demo
+.PHONY: all clean lang-jp lang-en demo lang
 
 export TEXINPUTS=.;lang/jp;lang/en;${CURDIR};
 xelatex := xelatex -shell-escape
@@ -20,6 +20,9 @@ clean:
 
 demo:
 	xelatex demo.tex && xelatex demo.tex && xelatex demo.tex
+
+lang:
+	cd lang && xelatex doc.tex && xelatex doc.tex && xelatex doc.tex
 
 # lang: lang-jp lang-en
 # 	cd lang && xelatex doc.tex && xelatex doc.tex && xelatex doc.tex

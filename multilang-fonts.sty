@@ -16,6 +16,8 @@
 \RequirePackage{etoolbox}
 \RequirePackage{ifthen}
 \RequirePackage{kvoptions}  % For key-value options
+\RequirePackage{booktabs}
+\RequirePackage{hyperref}  % make sure it comes last
 
 %===============================================================================
 % Package Options
@@ -34,7 +36,7 @@
 \DeclareStringOption[sc]{default}  % Default language
 \DeclareStringOption[1.25]{linespacing}  % Line spacing
 \DeclareBoolOption[true]{autospacing}   % Auto spacing in lists
-\DeclareStringOption[-1ex]{rubysep}
+\DeclareStringOption[-1.2ex]{rubysep}
 
 % Font family options
 \DeclareStringOption[noto]{fontset}     % Font set choice
@@ -55,7 +57,6 @@
     }%
 }
 
-\renewcommand{\rubysep}{\mlf@rubysep}
 
 % Font set definitions
 \ifthenelse{\equal{\mlf@fontset}{noto}}{%
