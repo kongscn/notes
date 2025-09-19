@@ -1,0 +1,44 @@
+\documentclass{book}
+
+\usepackage{import}
+\usepackage[default=sc]{multilang-fonts}
+
+\begin{document}
+\setcounter{tocdepth}{3}
+
+\frontmatter
+
+\title{Language Learning Notes}
+\author{Aiden}
+\date{Sep 2025}
+\maketitle
+
+% consider using tocloft? https://ctan.org/pkg/tocloft
+\tableofcontents
+
+% Introductory chapters
+% \chapter{Preface}
+
+\mainmatter
+
+\part{\ja{日本語}}
+
+\subimport{jp}{content.tex}
+
+
+\part{English}
+
+to be added...
+
+\part{le français}
+
+to be added...
+
+% \appendix
+% \chapter{First Appendix}
+
+\backmatter
+% \chapter{Last note}
+
+
+\end{document}
