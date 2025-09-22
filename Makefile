@@ -24,6 +24,16 @@ demo:
 lang:
 	cd lang && xelatex doc.tex && xelatex doc.tex && xelatex doc.tex
 
+jp: 
+	cd lang/jp && xelatex doc.tex && xelatex doc.tex && xelatex doc.tex
+
+en:
+	cd lang/en && xelatex doc.tex && xelatex doc.tex && xelatex doc.tex
+
+fr:
+	cd lang/fr && xelatex doc.tex && xelatex doc.tex && xelatex doc.tex
+
+
 # lang: lang-jp lang-en
 # 	cd lang && xelatex doc.tex && xelatex doc.tex && xelatex doc.tex
 

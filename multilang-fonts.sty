@@ -10,6 +10,7 @@
 %===============================================================================
 \RequirePackage{fontspec}
 \RequirePackage{xeCJK}
+\RequirePackage{indentfirst}
 \RequirePackage{xpinyin}  % For pinyin support
 \RequirePackage{ruby}     % For furigana/ruby text
 \RequirePackage{setspace}
@@ -37,12 +38,16 @@
 \DeclareStringOption[1.25]{linespacing}  % Line spacing
 \DeclareBoolOption[true]{autospacing}   % Auto spacing in lists
 \DeclareStringOption[-1.2ex]{rubysep}
+\DeclareStringOption[2em]{parindent}
 
 % Font family options
 \DeclareStringOption[noto]{fontset}     % Font set choice
 \DeclareBoolOption[false]{customfonts}  % Allow custom font definitions
 
 \ProcessKeyvalOptions*
+
+\setlength{\parskip}{1ex}
+\setlength{\parindent}{\mlf@parindent}
 
 %===============================================================================
 % Font Detection and Fallback System
@@ -198,8 +203,8 @@
         CJKecglue=\hskip 0.1em plus 0.05em minus 0.05em,
         CheckSingle=true,
         PlainEquation=true,
-        AutoFakeBold=1.5,
-        AutoFakeSlant=0.15
+        % AutoFakeBold=1.5,
+        % AutoFakeSlant=0.15
     }%
 }
 
@@ -228,7 +233,7 @@
 \newcommand{\langJP}{%
     \CJKfamily+{jprmfont}%
     \mlf@setcjkconfig{kaiming}%
-    \xeCJKsetup{CJKglue=\hskip 0em plus 0.08em minus 0.01em}%
+    % \xeCJKsetup{CJKglue=\hskip 0em plus 0.08em minus 0.01em}%
     \setstretch{\mlf@linespacing}%
     \renewcommand{\mlf@currentlang}{Japanese}%
 }
@@ -243,6 +248,10 @@
 %===============================================================================
 % Environment Support
 %===============================================================================
+
+% \newenvironment{noindent}
+%     {\setlength{\parindent}{0em}}
+%     {\setlength{\parindent}{\mlf@parindent}}
 
 % Language-specific environments
 \newenvironment{SCtext}{\langSC}{\par}
