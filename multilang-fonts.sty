@@ -37,7 +37,7 @@
 \DeclareStringOption[sc]{default}  % Default language
 \DeclareStringOption[1.25]{linespacing}  % Line spacing
 \DeclareBoolOption[true]{autospacing}   % Auto spacing in lists
-\DeclareStringOption[-1.2ex]{rubysep}
+\DeclareStringOption[-0.75ex]{rubysep}
 \DeclareStringOption[2em]{parindent}
 
 % Font family options
@@ -48,6 +48,7 @@
 
 \setlength{\parskip}{1ex}
 \setlength{\parindent}{\mlf@parindent}
+% \renewcommand{\rubysep}{\mlf@rubysep}
 
 %===============================================================================
 % Font Detection and Fallback System
@@ -234,7 +235,7 @@
     \CJKfamily+{jprmfont}%
     \mlf@setcjkconfig{kaiming}%
     % \xeCJKsetup{CJKglue=\hskip 0em plus 0.08em minus 0.01em}%
-    \setstretch{\mlf@linespacing}%
+    \setstretch{1.5}%
     \renewcommand{\mlf@currentlang}{Japanese}%
 }
 
@@ -286,18 +287,39 @@
     \AtBeginEnvironment{verse}{\setstretch{1.2}}
 \fi
 
+
 %===============================================================================
 % Ruby/Furigana Enhancement
 %===============================================================================
 
-% Better ruby command for Japanese
-\newcommand{\furigana}[2]{%
-    \ruby{#1}{{\tiny #2}}%
+% Store normal baseline skip for comparison
+\newlength{\mlf@normalbaselineskip}
+\AtBeginDocument{%
+    \setlength{\mlf@normalbaselineskip}{\baselineskip}%
 }
 
-% Pinyin support for Chinese
-\newcommand{\pinyinx}[2]{%
+% Smart furigana that detects context
+\DeclareRobustCommand{\furigana}[2]{%
+    % Check if we're in a tight spacing environment
+    \ifdim\baselineskip<1.2\mlf@normalbaselineskip
+        \begingroup
+        \def\rubysep{0.0ex}% Tighter spacing for lists
+        \ruby{#1}{{\tiny #2}}%
+        \endgroup
+    \else
+        \begingroup
+        \def\rubysep{\mlf@rubysep}% Tighter spacing for lists
+        \ruby{#1}{{\tiny #2}}%
+        \endgroup
+    \fi
+}
+
+% Optimized version for lists (explicit)
+\DeclareRobustCommand{\furiganalist}[2]{%
+    \begingroup
+    \def\rubysep{0ex}%
     \ruby{#1}{{\tiny #2}}%
+    \endgroup
 }
 
 %===============================================================================
@@ -393,3 +415,18 @@
 }
 
 \endinput
+
+
+% % Special furigana command for use in lists
+% \newcommand{\furiganalist}[2]{%
+%     \ruby{#1}{{\tiny\vspace{-0.5ex} #2}}%
+% }
+
+% % Enhanced furigana with automatic adjustment
+% \newcommand{\furiganaauto}[2]{%
+%     \ifdim\baselineskip<1.5\normalbaselineskip
+%         \ruby{#1}{{\tiny\vspace{-0.3ex} #2}}%
+%     \else
+%         \ruby{#1}{{\tiny #2}}%
+%     \fi
+% }
