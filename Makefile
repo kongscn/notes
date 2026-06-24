@@ -1,4 +1,4 @@
-.PHONY: all clean lang-jp lang-en demo lang
+.PHONY: all clean lang-jp lang-en demo lang macos-fonts
 
 export TEXINPUTS=.;lang/jp;lang/en;${CURDIR};
 xelatex := xelatex -shell-escape
@@ -16,6 +16,11 @@ clean:
 	cd lang/jp && rm -f *.aux *.log *.out *.pdf
 	cd lang/en && rm -f *.aux *.log *.out *.pdf
 	cd lang && rm -f *.aux *.log *.out *.pdf
+
+macos-fonts:
+	brew install --cask font-noto-serif font-noto-sans font-noto-sans-mono
+	brew install --cask font-noto-serif-cjk font-noto-sans-cjk
+	fc-cache -f -v
 
 
 demo:
