@@ -366,7 +366,23 @@
 \ifmlf@kr\AtEndOfPackage{\langKR}\fi
 
 
+\makeatletter
+\newcounter{vocablist}
 \newcounter{vocabitem}
+
+\newcommand{\mlf@vocabtotal}{%
+  \@ifundefined{mlf@vocabtotal@\arabic{vocablist}}%
+    {??}%
+    {\csname mlf@vocabtotal@\arabic{vocablist}\endcsname}%
+}
+
+\newcommand{\mlf@writevocabtotal}{%
+  \protected@write\@auxout{}{%
+    \string\expandafter\string\gdef
+    \string\csname\space mlf@vocabtotal@\arabic{vocablist}\string\endcsname
+    {\arabic{vocabitem}}%
+  }%
+}
 
 \NewDocumentCommand{\vocab}{m O{} O{}}{%
   \stepcounter{vocabitem}%
@@ -378,6 +394,8 @@
 
 \NewDocumentEnvironment{vocablist}{O{2}}%
   {%
+    \stepcounter{vocablist}%
+    \subsection{生词表~~（~\mlf@vocabtotal{}~）}%
     \setcounter{vocabitem}{0}%
     \setlength{\columnseprule}{0.2pt}%
     \setlength{\columnsep}{1.2em}%
@@ -385,7 +403,9 @@
     \small
     \setlength{\parskip}{0.2em}%
   }%
-  {\end{multicols}}
+  {\end{multicols}\mlf@writevocabtotal}
+
+\makeatother
 
 
 %===============================================================================
