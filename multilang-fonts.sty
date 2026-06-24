@@ -366,15 +366,19 @@
 \ifmlf@kr\AtEndOfPackage{\langKR}\fi
 
 
+\newcounter{vocabitem}
+
 \NewDocumentCommand{\vocab}{m O{} O{}}{%
+  \stepcounter{vocabitem}%
   \noindent
-  \begin{tabularx}{\linewidth}{@{}>{\bfseries}l l X@{}}
-    #1 & {\small #2} & {\langSC \small #3}
+  \begin{tabularx}{\linewidth}{@{}>{\small\bfseries}r@{\hspace{0.5em}}>{\bfseries}l l X@{}}
+    \arabic{vocabitem}. & #1 & {\small #2} & {\langSC \small #3}
   \end{tabularx}\par
 }
 
 \NewDocumentEnvironment{vocablist}{O{2}}%
   {%
+    \setcounter{vocabitem}{0}%
     \setlength{\columnseprule}{0.2pt}%
     \setlength{\columnsep}{1.2em}%
     \begin{multicols}{#1}%
