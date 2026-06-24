@@ -19,6 +19,10 @@
 \RequirePackage{kvoptions}  % For key-value options
 \RequirePackage{booktabs}
 \RequirePackage{hyperref}  % make sure it comes last
+\RequirePackage{tabularx}
+\RequirePackage{multicol}
+\RequirePackage{xparse}
+\RequirePackage{array}
 
 %===============================================================================
 % Package Options
@@ -322,6 +326,8 @@
     \endgroup
 }
 
+\newcommand{\fg}[2]{\furigana{#1}{#2}}
+
 %===============================================================================
 % Font Style Commands for CJK
 %===============================================================================
@@ -358,6 +364,25 @@
 \ifmlf@hk\AtEndOfPackage{\langHK}\fi
 \ifmlf@jp\AtEndOfPackage{\langJP}\fi
 \ifmlf@kr\AtEndOfPackage{\langKR}\fi
+
+
+\NewDocumentCommand{\vocab}{m O{} O{}}{%
+  \noindent
+  \begin{tabularx}{\linewidth}{@{}>{\bfseries}l l X@{}}
+    #1 & {\small #2} & {\langSC \small #3}
+  \end{tabularx}\par
+}
+
+\NewDocumentEnvironment{vocablist}{O{2}}%
+  {%
+    \setlength{\columnseprule}{0.2pt}%
+    \setlength{\columnsep}{1.2em}%
+    \begin{multicols}{#1}%
+    \small
+    \setlength{\parskip}{0.2em}%
+  }%
+  {\end{multicols}}
+
 
 %===============================================================================
 % Utility Commands
