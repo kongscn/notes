@@ -1,0 +1,8 @@
+{
+    "[latex]": {
+        "editor.unicodeHighlight.allowedCharacters": {
+            "　": true,
+            "：": true
+        }
+    }
+}
