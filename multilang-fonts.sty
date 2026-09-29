@@ -23,6 +23,7 @@
 \RequirePackage{multicol}
 \RequirePackage{xparse}
 \RequirePackage{array}
+\RequirePackage{xcolor}
 
 %===============================================================================
 % Package Options
@@ -151,7 +152,7 @@
 % Define CJK font families for each language
 % Simplified Chinese
 \newCJKfontfamily\scrmfont{\mlf@cjk@sc@main}[
-    BoldFont={\mlf@cjk@sc@sans},
+    BoldFont={* Bold},
     Language=Chinese Simplified
 ]
 \newCJKfontfamily\scsfont{\mlf@cjk@sc@sans}[Language=Chinese Simplified]
@@ -159,7 +160,7 @@
 
 % Traditional Chinese
 \newCJKfontfamily\tcrmfont{\mlf@cjk@tc@main}[
-    BoldFont={\mlf@cjk@tc@sans},
+    BoldFont={* Bold},
     Language=Chinese Traditional
 ]
 \newCJKfontfamily\tcsfont{\mlf@cjk@tc@sans}[Language=Chinese Traditional]
@@ -167,7 +168,7 @@
 
 % Hong Kong
 \newCJKfontfamily\hkrmfont{\mlf@cjk@hk@main}[
-    BoldFont={\mlf@cjk@hk@sans},
+    BoldFont={* Bold},
     Language=Chinese Hong Kong
 ]
 \newCJKfontfamily\hksfont{\mlf@cjk@hk@sans}[Language=Chinese Hong Kong]
@@ -175,7 +176,7 @@
 
 % Japanese
 \newCJKfontfamily\jprmfont{\mlf@cjk@jp@main}[
-    BoldFont={\mlf@cjk@jp@sans},
+    BoldFont={* Bold},
     Language=Japanese
 ]
 \newCJKfontfamily\jpsfont{\mlf@cjk@jp@sans}[Language=Japanese]
@@ -183,7 +184,7 @@
 
 % Korean
 \newCJKfontfamily\krrmfont{\mlf@cjk@kr@main}[
-    BoldFont={\mlf@cjk@kr@sans},
+    BoldFont={* Bold},
     Language=Korean
 ]
 \newCJKfontfamily\krsfont{\mlf@cjk@kr@sans}[Language=Korean]
@@ -327,6 +328,19 @@
 }
 
 \newcommand{\fg}[2]{\furigana{#1}{#2}}
+
+%===============================================================================
+% Highlight Commands
+%===============================================================================
+
+\definecolor{mlfhl}{RGB}{22,64,128}       % Indigo / Ai
+% \definecolor{mlfhl}{RGB}{153,0,51}     % Burgundy
+% \definecolor{mlfhl}{RGB}{183,28,28}    % Crimson / Beni
+% \definecolor{mlfhl}{RGB}{196,62,24}    % Vermilion / Shu
+% \definecolor{mlfhl}{RGB}{0,110,110}    % Deep teal
+% \definecolor{mlfhl}{RGB}{112,36,110}   % Plum
+\DeclareRobustCommand{\hl}[1]{\textcolor{mlfhl}{\textbf{#1}}}
+\DeclareRobustCommand{\lhl}[1]{\textcolor{mlfhl}{\textmd{#1}}}
 
 %===============================================================================
 % Font Style Commands for CJK
