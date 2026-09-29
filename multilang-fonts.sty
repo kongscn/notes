@@ -135,7 +135,7 @@
 
 % Set default CJK fonts
 \setCJKmainfont{\mlf@cjk@sc@main}[
-    % BoldFont={\mlf@cjk@sc@main@bold},
+    BoldFont={* Bold},
     ItalicFont={\mlf@cjk@sc@main},
     Script=CJK,
     Language=Chinese Simplified
@@ -303,6 +303,12 @@
     \setlength{\mlf@normalbaselineskip}{\baselineskip}%
 }
 
+% Usage:
+%   \furigana{漢字}{かんじ}   % reading as ruby above the base text
+%   \fg{漢字}{かんじ}         % short alias of \furigana
+%   \furiganalist{漢字}{かんじ}  % tight version for lists
+% \furigana uses tighter ruby spacing when line spacing is below 1.2x normal.
+
 % Smart furigana that detects context
 \DeclareRobustCommand{\furigana}[2]{%
     % Check if we're in a tight spacing environment
@@ -332,6 +338,11 @@
 %===============================================================================
 % Highlight Commands
 %===============================================================================
+
+% Usage:
+%   \hl{鉛筆}    % highlight colour + bold
+%   \lhl{車}     % highlight colour, normal weight (even inside bold text)
+% Change the colour by switching the active \definecolor line below.
 
 \definecolor{mlfhl}{RGB}{22,64,128}       % Indigo / Ai
 % \definecolor{mlfhl}{RGB}{153,0,51}     % Burgundy
@@ -380,6 +391,23 @@
 \ifmlf@kr\AtEndOfPackage{\langKR}\fi
 
 
+%===============================================================================
+% Vocabulary Lists
+%===============================================================================
+
+% Usage:
+%   \begin{vocablist}[2]                 % [n] = number of columns, default 2
+%       \vocab{駅}                       % word only
+%       \vocab{休む}[休みます]            % word + extra form (reading, ます form)
+%       \vocab{\hl{鉛筆}}[えんぴつ][铅笔]  % word + extra form + meaning
+%       \vocab{車}[][汽车]               % meaning only: leave the form empty
+%   \end{vocablist}
+%
+% Each list starts a \subsection "生词表（N）" with its word count N and
+% restarts item numbering. N is read from the .aux file, so it shows "??"
+% until the document has been compiled twice.
+% Row layout: number | word | form (small) | meaning (small, Simplified Chinese)
+
 \makeatletter
 \newcounter{vocablist}
 \newcounter{vocabitem}
@@ -401,7 +429,7 @@
 \NewDocumentCommand{\vocab}{m O{} O{}}{%
   \stepcounter{vocabitem}%
   \noindent
-  \begin{tabularx}{\linewidth}{@{}>{\small\bfseries}r@{\hspace{0.5em}}>{\bfseries}l l X@{}}
+  \begin{tabularx}{\linewidth}{@{}>{\small}r@{\hspace{0.5em}}l l X@{}}
     \arabic{vocabitem}. & #1 & {\small #2} & {\langSC \small #3}
   \end{tabularx}\par
 }
@@ -469,11 +497,13 @@
 \newcommand{\mlfhelp}{%
     \typeout{===============================================}%
     \typeout{multilang-fonts package commands:}%
-    \typeout{Language switching: \string\langSC, \string\langTC, \string\langJP, \string\langKR}%
-    \typeout{Short aliases: \string\Lsc, \string\Ltc, \string\Ljp, \string\Lkr}%
-    \typeout{Inline text: \string\zhcn\{...\}, \string\zhtw\{...\}, \string\ja\{...\}, \string\ko\{...\}}%
-    \typeout{Environments: SCtext, TCtext, JPtext, KRtext}%
+    \typeout{Language switching: \string\langSC, \string\langTC, \string\langHK, \string\langJP, \string\langKR}%
+    \typeout{Inline text: \string\zhcn\{...\}, \string\zhtw\{...\}, \string\zhhk\{...\}, \string\ja\{...\}, \string\ko\{...\}}%
+    \typeout{Environments: SCtext, TCtext, HKtext, JPtext, KRtext}%
     \typeout{Font styles: \string\langSCsans, \string\langSCmono, etc.}%
+    \typeout{Furigana: \string\furigana\{base\}\{reading\}, \string\fg, \string\furiganalist}%
+    \typeout{Highlight: \string\hl\{...\} (colour+bold), \string\lhl\{...\} (colour only)}%
+    \typeout{Vocab: vocablist[cols] env, \string\vocab\{word\}[form][meaning]}%
     \typeout{===============================================}%
 }
 
