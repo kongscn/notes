@@ -24,6 +24,7 @@
 \RequirePackage{xparse}
 \RequirePackage{array}
 \RequirePackage{xcolor}
+\RequirePackage{enumitem}
 
 %===============================================================================
 % Package Options
@@ -32,6 +33,8 @@
     family=mlf,
     prefix=mlf@
 }
+
+\setlist[enumerate,2]{label=\arabic*)}
 
 % Language options
 \DeclareBoolOption[false]{sc}      % Simplified Chinese
