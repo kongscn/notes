@@ -1,0 +1,15 @@
+\section{动词}
+
+\csvautolongtabularray{verbs.csv}[
+    caption = {动词表},
+    label = {tab:verbs},
+][
+%   colspec = {l X X},
+%   colspec = {X[1.5,l] *{6}{X[1,r]}},
+%   colspec = {X[2,l] *{6}{r}},
+  colspec = {l *{6}{c}},
+  colsep = 3pt,
+  rowhead = 1,
+  row{1} = {font=\bfseries},
+  hline{1,2,Z} = {solid},
+]
