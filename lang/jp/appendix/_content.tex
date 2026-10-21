@@ -1,2 +1,13 @@
+\chapter{Appendix}
+
 \subimport{.}{01-verb.tex}
 \subimport{.}{02-adj.tex}
+\subimport{.}{03-time.tex}
+
+\section{日期}
+
+\csvautotabularray{calendar.csv}[
+  colspec = {l *{7}{c}},
+%   row{1} = {font=\bfseries},
+  hline{1,2,3,4,Z} = {solid},
+]
